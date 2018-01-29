@@ -1,10 +1,10 @@
 require 'pry'
 require 'pp'
-require_relative '../../lib/priority_queue'
-require_relative '../../lib/node'
+require 'priority_queue'
+require 'node'
 
 module Astar
-  class Astar
+  class AstarClass
     def self.find_path(start_position, destination_position, k)
       # Init
       start_edge = Way.find(road_matching(start_position))
@@ -42,9 +42,9 @@ module Astar
             closed_list << current_node
             flag = 1
 
-            p "DESTINATION REACH!!!!!"
-            p reconstruct(current_node.id, closed_list, path)
-            p "Cost in meters: #{current_node.cost}"
+            # p "DESTINATION REACH!!!!!"
+            return reconstruct(current_node.id, closed_list, path)
+            # p "Cost in meters: #{current_node.cost}"
             break
           end
           get_adj(current_node.id).each do |adj_id|
