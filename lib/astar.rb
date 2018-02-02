@@ -10,11 +10,14 @@ module Astar
       start_edge = Way.find(road_matching(start_position))
       destination_edge = Way.find(road_matching(destination_position))
 
-      @destination_node_1 = Node.new(destination_edge["source"], nil, 0)
-      @destination_node_2 = Node.new(destination_edge["target"], nil, 0)
+      @destination_node_1 = Node.new(destination_edge["source"], nil, 0, 0)
+      @destination_node_2 = Node.new(destination_edge["target"], nil, 0, 0)
 
-      @start_node_1 = Node.new(start_edge["source"], nil, calculate_heuristic_cost(start_edge["source"],destination_edge))
-      @start_node_2 = Node.new(start_edge["target"], nil, calculate_heuristic_cost(start_edge["target"],destination_edge))
+      start_node_1_heuristic_cost = calculate_heuristic_cost(start_edge["source"],destination_edge)
+      start_node_2_heuristic_cost = calculate_heuristic_cost(start_edge["target"],destination_edge)
+
+      @start_node_1 = Node.new(start_edge["source"], nil, 0, start_node_1_heuristic_cost)
+      @start_node_2 = Node.new(start_edge["target"], nil, 0, start_node_2_heuristic_cost)
 
       open_list = PriorityQueue.new
       closed_list = Array.new
@@ -50,10 +53,14 @@ module Astar
           get_adj(current_node.id).each do |adj_id|
             # Adj_cost = Real cost from start to parent + Distance between parent and adj + Heuristic from adj to destination
             #          = (Parent's cost - Heuristic from parent to destination) + Distance between parent and adj + Heuristic from adj to destination
-            adj_cost = get_distance(current_node.id, adj_id) + current_node.cost - calculate_heuristic_cost(current_node.id,destination_edge) + calculate_heuristic_cost(adj_id,destination_edge)
+            # adj_cost = get_distance(current_node.id, adj_id) + current_node.cost - calculate_heuristic_cost(current_node.id,destination_edge) + calculate_heuristic_cost(adj_id,destination_edge)
 
-            @adj_node = Node.new(adj_id,current_node.id, adj_cost)
-            # binding.pry
+            # @adj_node = Node.new(adj_id,current_node.id, adj_cost)
+            adj_real_cost = get_distance(current_node.id, adj_id) + current_node.real_cost
+            adj_heuristic_cost = calculate_heuristic_cost(current_node.id,destination_edge)
+
+            @adj_node = Node.new(adj_id, current_node.id, adj_real_cost, adj_heuristic_cost)
+
             if open_list.compact.map(&:id).include? adj_id
               if @adj_node >= open_list.find(adj_id)
                 next
@@ -85,7 +92,7 @@ module Astar
       result[0]["gid"]
     end
 
-    # Calculate heuristic cost from a node_id (column id in ways table) to destination_id
+    # Calculate heuristic cost from a node_id (column id in ways table) to destination_edge (destination_id_1 or destination_id_2)
     # Result = the smaller cost
     def self.calculate_heuristic_cost(current_id, destination_edge_id)
       destination_id_1 = Way.where(gid: destination_edge_id).first.source
