@@ -109,12 +109,7 @@ module Astar
       dLon = [(destination_id_1_lon - current_id_lon).abs, (destination_id_2_lon - current_id_lon).abs].min
       dLat = [(destination_id_1_lat - current_id_lat).abs, (destination_id_2_lat - current_id_lat).abs].min
 
-      # 0: h(v)=0 (Use this value to compare with pgr_dijkstra)
-      # 1: h(v)=abs(max(Δx,Δy))
-      # 2: h(v)=abs(min(Δx,Δy))
-      # 3: h(v)=Δx∗Δx+Δy∗Δy
-      # 4: h(v)=sqrt(Δx∗Δx+Δy∗Δy)
-      # 5: h(v)=abs(Δx)+abs(Δy)
+
       case heuristic_method
         when 0
           return 0
