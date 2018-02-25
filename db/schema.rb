@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20180220183831) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,18 @@ ActiveRecord::Schema.define(version: 0) do
     t.float "maxspeed_backward"
     t.string "force", limit: 1
     t.index ["tag_id"], name: "configuration_tag_id_key", unique: true
+  end
+
+  create_table "migrations", id: :serial, force: :cascade do |t|
+    t.string "migration", limit: 255, null: false
+    t.integer "batch", null: false
+  end
+
+  create_table "password_resets", id: false, force: :cascade do |t|
+    t.string "email", limit: 255, null: false
+    t.string "token", limit: 255, null: false
+    t.datetime "created_at", precision: 0
+    t.index ["email"], name: "password_resets_email_index"
   end
 
   create_table "planet_osm_line", id: false, force: :cascade do |t|
@@ -360,6 +372,34 @@ ActiveRecord::Schema.define(version: 0) do
     t.geometry "new_geom", limit: {:srid=>4326, :type=>"st_point"}
     t.index ["osm_id"], name: "pointsofinterest_osm_id_key", unique: true
     t.index ["the_geom"], name: "pointsofinterest_the_geom_idx", using: :gist
+  end
+
+  create_table "requests", force: :cascade do |t|
+    t.integer "shop_id"
+    t.string "destination_address"
+    t.integer "shipper_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shops", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "lon"
+    t.string "lat"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", id: :serial, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.string "email", limit: 255, null: false
+    t.string "password", limit: 255, null: false
+    t.string "remember_token", limit: 100
+    t.datetime "created_at", precision: 0
+    t.datetime "updated_at", precision: 0
+    t.index ["email"], name: "users_email_unique", unique: true
   end
 
   create_table "vertices", force: :cascade do |t|

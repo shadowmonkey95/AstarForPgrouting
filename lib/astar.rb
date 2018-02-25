@@ -155,8 +155,11 @@ module Astar
     # Get an array of current_node's adjacent nodes
     def self.get_adj(current_id)
       # Way.where(source: current_id, cost: 0..Float::INFINITY).map(&:target)
+      # sql1 = Way.where(source: current_id, cost: 0..Float::INFINITY).map(&:target)
+      # sql2 = Way.where(target: current_id, cost: 0..Float::INFINITY).map(&:source)
+
       sql1 = Way.where(source: current_id, cost: 0..Float::INFINITY).map(&:target)
-      sql2 = Way.where(target: current_id, cost: 0..Float::INFINITY).map(&:source)
+      sql2 = Way.where(target: current_id, cost: 0..Float::INFINITY).where.not(one_way: 1).map(&:source)
       sql1 + sql2
     end
 
@@ -172,6 +175,40 @@ module Astar
         reconstruct(current_node.parent_id, closed_list, path)
       end
       path
+    end
+  end
+  class AstarDb
+    def self.find_path(start_position, destination_position, heuristic_method)
+      start_edge = Way.find(road_matching(start_position))
+      destination_edge = Way.find(road_matching(destination_position))
+
+      start_node_1 = start_edge["source"]
+      start_node_2 = start_edge["target"]
+
+      destination_node_1 = destination_edge["source"]
+      destination_node_2 = destination_edge["target"]
+
+      sql = "select * from pgr_astar(
+            'select gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+            ARRAY[#{start_node_1}, #{start_node_2}], ARRAY[#{destination_node_1}, #{destination_node_2}], heuristic := #{heuristic_method} )
+            "
+      result = ActiveRecord::Base.connection.execute(sql)
+      result.each do |row|
+        puts row['node']
+      end
+
+    end
+
+    # Find the nearest way base on location's osm_id
+    def self.road_matching(current_osm_id)
+      sql = "select w.gid, w.source, w.target, p.osm_id current_osm_id, st_distance (st_transform(p.way,2093), st_transform(w.the_geom,2093))
+           from planet_osm_point p, ways w
+           where p.osm_id = #{current_osm_id}
+           order by st_distance (st_transform(p.way,2093), st_transform(w.the_geom,2093)) asc
+           limit 1
+          "
+      result = ActiveRecord::Base.connection.execute(sql)
+      result[0]["gid"]
     end
   end
 end

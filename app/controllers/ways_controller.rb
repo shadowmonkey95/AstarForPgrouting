@@ -11,6 +11,6 @@ class WaysController < ApplicationController
   end
 
   def index
-    @path = AstarClass.find_path(2580820540,2579658115,1)
+    @path = AstarClass.find_path(2580820540,2579658115,1,1)
   end
 end

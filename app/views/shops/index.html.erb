@@ -1,0 +1,31 @@
+<h1> Shop lists</h1>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Lon</th>
+      <th>Lat</th>
+      <th>Create at</th>
+      <th>Update at</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%- @shops.each do |s| -%>
+    <tr>
+      <td><%= s.id %></td>
+      <td><%= s.name %></td>
+      <td><%= s.address %></td>
+      <td><%= s.lon %></td>
+      <td><%= s.lat %></td>
+      <td><%= s.created_at %></td>
+      <td><%= s.updated_at %></td>
+      <td><%= link_to "Request", shop_requests_path(shop_id: s.id) %></td>
+      <td><%= link_to "Delete", shop_path(id: s.id), method: :delete, data: { confirm: "Are you sure?"}%></td>
+    </tr>
+    <%- end -%>
+  </tbody>
+</table>
+<%= link_to "Add Shop", new_shop_path %>

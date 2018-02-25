@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shop_id: 1
+  destination_address: MyString
+  shipper_id: 1
+  status: MyString
+
+two:
+  shop_id: 1
+  destination_address: MyString
+  shipper_id: 1
+  status: MyString
