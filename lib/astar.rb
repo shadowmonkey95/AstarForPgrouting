@@ -7,109 +7,104 @@ module Astar
   class AstarClass
     def self.find_path(start_position, destination_position, k, heuristic_method)
       # Init
+      # Load tập các đỉnh vertices vào biến load_ver
+      vertices = load_ver
+
+      # Gán start_position, destination_position vào 2 đoạn đường gần
       start_edge = Way.find(road_matching(start_position))
       destination_edge = Way.find(road_matching(destination_position))
 
+      # Khởi tạo 2 destination_node
       @destination_node_1 = Node.new(destination_edge["source"], nil, 0, 0)
       @destination_node_2 = Node.new(destination_edge["target"], nil, 0, 0)
 
-      start_node_1_heuristic_cost = calculate_heuristic_cost(start_edge["source"],destination_edge, heuristic_method)
-      start_node_2_heuristic_cost = calculate_heuristic_cost(start_edge["target"],destination_edge, heuristic_method)
+      # Tính heuristic_cost cho 2 start_node
+      start_node_1_heuristic_cost = calculate_heuristic_cost(start_edge["source"],destination_edge["source"], destination_edge["target"], heuristic_method, vertices)
+      start_node_2_heuristic_cost = calculate_heuristic_cost(start_edge["target"],destination_edge["source"], destination_edge["target"], heuristic_method, vertices)
 
+      # Khởi tạo 2 start_node
       @start_node_1 = Node.new(start_edge["source"], nil, 0, start_node_1_heuristic_cost)
       @start_node_2 = Node.new(start_edge["target"], nil, 0, start_node_2_heuristic_cost)
 
+      # Khởi tạo open_list là 1 priority_queue, closed_list là 1 array
       open_list = PriorityQueue.new
       closed_list = Array.new
       current_arr = Array.new
       path = Array.new
       flag = 0
 
+      # Push 2 start_node vào open_list
       open_list.push(@start_node_1)
       open_list.push(@start_node_2)
 
-      while open_list.any? == true && flag == 0 do
+      # load_adj = các node lân cận vào 1 mảng các hash
+      load_adj = load_adj(105.8529442,21.0314522,300000)
 
-        if open_list.get_size < k
+      while open_list.any? == true && flag == 0 do #Khi open_list vẫn còn phần tử hoặc vẫn chưa đến đích (flag == 0)
+        if open_list.get_size < k # Check số phần tử trong mảng trước khi pop tránh trường hợp pop nhiều hơn số phần tử trong mảng => lỗi
           n = open_list.get_size
         else
           n = k
         end
 
         for i in 0...n
-          current_arr[i] = open_list.pop
+          current_arr[i] = open_list.pop #Pop k phần tử từ open_list rồi lưu vào 1 mảng để xử lý (mảng current_arr)
         end
 
-        current_arr.each do |current_node|
+        current_arr.each do |current_node| # Chạy vòng for cho các phần tử trong mảng current_arr
+          # Thuật toán dừng khi đến đích
           if current_node.id == @destination_node_1.id || current_node.id == @destination_node_2.id
             closed_list << current_node
             flag = 1
-
-            # p "DESTINATION REACH!!!!!"
             return reconstruct(current_node.id, closed_list, path)
-            # p "Cost in meters: #{current_node.cost}"
             break
           end
-          get_adj(current_node.id).each do |adj_id|
-            # Adj_cost = Real cost from start to parent + Distance between parent and adj + Heuristic from adj to destination
-            #          = (Parent's cost - Heuristic from parent to destination) + Distance between parent and adj + Heuristic from adj to destination
-            # adj_cost = get_distance(current_node.id, adj_id) + current_node.cost - calculate_heuristic_cost(current_node.id,destination_edge) + calculate_heuristic_cost(adj_id,destination_edge)
 
-            # @adj_node = Node.new(adj_id,current_node.id, adj_cost)
-            adj_real_cost = get_distance(current_node.id, adj_id) + current_node.real_cost
-            adj_heuristic_cost = calculate_heuristic_cost(current_node.id,destination_edge, heuristic_method)
+          # Nếu chưa đến đích tiếp tục tìm các node lân cận adj_node
+          get_adj(current_node.id,load_adj).each do |adj_id|
+            adj_real_cost = get_distance(current_node.id, adj_id, load_adj)+ current_node.real_cost
+            adj_heuristic_cost = calculate_heuristic_cost(current_node.id,destination_edge["source"], destination_edge["target"], heuristic_method, vertices)
 
             @adj_node = Node.new(adj_id, current_node.id, adj_real_cost, adj_heuristic_cost)
 
             if open_list.compact.map(&:id).include? adj_id
+              # Nếu đã có 1 node trong open_list có cùng id với adj_node  có cost thấp hơn thì ta continue (tiếp tục tìm tiếp)
               if @adj_node >= open_list.find(adj_id)
                 next
               end
             elsif closed_list.compact.map(&:id).include? adj_id
+              # Nếu đã có 1 node trong closed_list có cùng id với adj_node có cost thấp hơn thì ta continue (tiếp tục tìm tiếp)
               if @adj_node >= closed_list.compact.detect {|node| node.id == adj_id}
                 next
                 open_list.push(closed_list.compact.detect {|node| node.id == adj_id})
                 closed_list.compact.delete_if{|node| node.id == adj_id}
               end
             else
+              # Nếu không phải 2 trường hợp trên nghĩa là đã tìm thấy node tốt hơn hoặc chưa được duyệt ==> push vào open list để duyệt
               open_list.push(@adj_node)
             end
           end
+          # Sau khi đã duyệt hết các node lân cận của current_node thì ta add current_node vào mảng closed_list để duyệt tiếp
           closed_list << current_node
         end
       end
     end
 
-    # Find the nearest way base on location's osm_id
-    def self.road_matching(current_osm_id)
-      sql = "select w.gid, w.source, w.target, p.osm_id current_osm_id, st_distance (st_transform(p.way,2093), st_transform(w.the_geom,2093))
-           from planet_osm_point p, ways w
-           where p.osm_id = #{current_osm_id}
-           order by st_distance (st_transform(p.way,2093), st_transform(w.the_geom,2093)) asc
-           limit 1
-          "
-      result = ActiveRecord::Base.connection.execute(sql)
-      result[0]["gid"]
+    def self.get_adj(current_id, load_adj)
+      adjs1 = load_adj.select{|key| key["source"] == current_id}.map{|x| x["target"]}
+      adjs2 = load_adj.select{|key| key["target"] == current_id && key["one_way"] !=1}.map{|x| x["source"]}
+      adjs1 | adjs2
     end
 
-    # Calculate heuristic cost from a node_id (column id in ways table) to destination_edge (destination_id_1 or destination_id_2)
-    # Result = the smaller cost
-    def self.calculate_heuristic_cost(current_id, destination_edge_id, heuristic_method)
-      destination_id_1 = Way.where(gid: destination_edge_id).first.source
-      destination_id_2 = Way.where(gid: destination_edge_id).first.target
+    def self.get_distance(parent_id, current_id, load_adj)
+      if load_adj.select{|x| x["target"] == parent_id && x["source"] == current_id}.map{|x| x["length_m"]}.first == nil
+        load_adj.select{|x| x["source"] == parent_id && x["target"] == current_id}.map{|x| x["length_m"]}.first
+      else
+        load_adj.select{|x| x["target"] == parent_id && x["source"] == current_id}.map{|x| x["length_m"]}.first
+      end
+    end
 
-      destination_id_1_lat = Vertice.where(id: destination_id_1).first.lat
-      destination_id_1_lon = Vertice.where(id: destination_id_1).first.lon
-      destination_id_2_lat = Vertice.where(id: destination_id_2).first.lat
-      destination_id_2_lon = Vertice.where(id: destination_id_2).first.lon
-
-      current_id_lat = Vertice.where(id: current_id).first.lat
-      current_id_lon = Vertice.where(id: current_id).first.lon
-
-      dLon = [(destination_id_1_lon - current_id_lon).abs, (destination_id_2_lon - current_id_lon).abs].min
-      dLat = [(destination_id_1_lat - current_id_lat).abs, (destination_id_2_lat - current_id_lat).abs].min
-
-
+    def self.calculate_heuristic_cost(current_id, destination_id_1, destination_id_2, heuristic_method, vertices)
       case heuristic_method
         when 0
           return 0
@@ -127,6 +122,14 @@ module Astar
           result2 = ActiveRecord::Base.connection.execute(sql2)
           return result1[0]["heuristic_cost"] <= result2[0]["heuristic_cost"] ? result1[0]["heuristic_cost"] : result2[0]["heuristic_cost"]
         when 2
+          destination_id_1_lat = vertices.select{|key| key["id"] == destination_id_1}.map{|x| x["lat"]}.first.to_f
+          destination_id_1_lon = vertices.select{|key| key["id"] == destination_id_1}.map{|x| x["lon"]}.first.to_f
+          destination_id_2_lat = vertices.select{|key| key["id"] == destination_id_2}.map{|x| x["lat"]}.first.to_f
+          destination_id_2_lon = vertices.select{|key| key["id"] == destination_id_2}.map{|x| x["lon"]}.first.to_f
+
+          current_id_lat = vertices.select{|key| key["id"] == current_id}.map{|x| x["lat"]}.first.to_f
+          current_id_lon = vertices.select{|key| key["id"] == current_id}.map{|x| x["lon"]}.first.to_f
+
           cd1 = coordinate_distance(destination_id_1_lat, destination_id_1_lon, current_id_lat, current_id_lon)
           cd2 = coordinate_distance(destination_id_2_lat, destination_id_2_lon, current_id_lat, current_id_lon)
           return [cd1, cd2].min
@@ -142,25 +145,39 @@ module Astar
       result
     end
 
-
-    # The distance between 2 nodes in meters (column length_m in ways table)
-    def self.get_distance(parent_id, current_id)
-      if Way.where(source: parent_id, target: current_id).first == nil
-        Way.where(target: parent_id, source: current_id).first.length_m
-      else
-        Way.where(source: parent_id, target: current_id).first.length_m
+    def self.load_adj(lon, lat, radius_in_meter)
+      sql = "SELECT source, target, length_m, one_way
+             FROM ways w
+             WHERE ST_DWithin(the_geom, ST_MakePoint(#{lon},#{lat})::geography, #{radius_in_meter});
+            "
+      r = ActiveRecord::Base.connection.execute(sql)
+      load_adj = []
+      for i in 0...r.ntuples
+        load_adj << r.[](i)
       end
+      load_adj
     end
 
-    # Get an array of current_node's adjacent nodes
-    def self.get_adj(current_id)
-      # Way.where(source: current_id, cost: 0..Float::INFINITY).map(&:target)
-      # sql1 = Way.where(source: current_id, cost: 0..Float::INFINITY).map(&:target)
-      # sql2 = Way.where(target: current_id, cost: 0..Float::INFINITY).map(&:source)
+    def self.load_ver
+      sql = "SELECT id, lon, lat FROM ways_vertices_pgr"
+      r = ActiveRecord::Base.connection.execute(sql)
+      load_ver = []
+      for i in 0...r.ntuples
+        load_ver << r.[](i)
+      end
+      load_ver
+    end
 
-      sql1 = Way.where(source: current_id, cost: 0..Float::INFINITY).map(&:target)
-      sql2 = Way.where(target: current_id, cost: 0..Float::INFINITY).where.not(one_way: 1).map(&:source)
-      sql1 + sql2
+    # Find the nearest way base on location's osm_id
+    def self.road_matching(current_osm_id)
+      sql = "select w.gid, w.source, w.target, p.osm_id current_osm_id, st_distance (st_transform(p.way,2093), st_transform(w.the_geom,2093))
+           from planet_osm_point p, ways w
+           where p.osm_id = #{current_osm_id}
+           order by st_distance (st_transform(p.way,2093), st_transform(w.the_geom,2093)) asc
+           limit 1
+          "
+      result = ActiveRecord::Base.connection.execute(sql)
+      result[0]["gid"]
     end
 
     # Rebuild the path
@@ -193,10 +210,22 @@ module Astar
             ARRAY[#{start_node_1}, #{start_node_2}], ARRAY[#{destination_node_1}, #{destination_node_2}], heuristic := #{heuristic_method} )
             "
       result = ActiveRecord::Base.connection.execute(sql)
-      result.each do |row|
-        puts row['node']
+      edge_path = []
+      for i in 0...result.ntuples
+        edge_path << result.[](i)
       end
 
+      total = 0
+      edge_path.map{|x| x["edge"]}.each do |row|
+        if row == -1
+          p total
+          return
+        else
+          print "#{row}"
+          length_m = Way.where(gid: row).map(&:length_m).first
+          total += length_m
+        end
+      end
     end
 
     # Find the nearest way base on location's osm_id
@@ -212,7 +241,6 @@ module Astar
     end
   end
 end
-
 
 
 
