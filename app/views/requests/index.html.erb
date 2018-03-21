@@ -1,27 +1,46 @@
-<h1> Request lists</h1>
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Destination Address</th>
-    <th>Status</th>
-    <th>Create at</th>
-    <th>Update at</th>
-  </tr>
-  </thead>
+<h1 align="center"> Request lists</h1>
+<% if @requests.empty? %>
+    <p align="center">This store hasn't have any requests yet!!!</p>
+<% else %>
+  <div class="container">
+    <div class="row">
+      <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>Destination Address</th>
+          <th>Status</th>
+          <th>Create at</th>
+          <th>Update at</th>
+        </tr>
+        </thead>
 
-  <tbody>
-  <%- @requests.each do |r| -%>
-      <tr>
-        <td><%= r.id %></td>
-        <td><%= r.destination_address %></td>
-        <td><%= r.status %></td>
-        <td><%= r.created_at %></td>
-        <td><%= r.updated_at %></td>
-        <td><%= link_to "Edit", edit_shop_request_path(id: r.id)%></td>
-        <td><%= link_to "Delete", shop_request_path(id: r.id), method: :delete, data: { confirm: "Are you sure?"}%></td>
-      </tr>
-  <%- end -%>
-  </tbody>
-</table>
-<%= link_to "Create new request", new_shop_request_path %>
+        <tbody>
+        <%- @requests.each do |r| -%>
+            <tr>
+              <td><%= r.id %></td>
+              <td><%= r.destination_address %></td>
+              <td><%= r.status %></td>
+              <td><%= r.created_at %></td>
+              <td><%= r.updated_at %></td>
+              <td colspan="2">
+                <%= link_to edit_shop_request_path(id: r.id) do %>
+                    <%= octicon "pencil" %>
+                <% end %>
+                <%= link_to shop_request_path(id: r.id), method: :delete, data: { confirm: "Are you sure?"} do %>
+                    <%= octicon "diff-removed" %>
+                <% end %>
+              </td>
+            </tr>
+        <%- end -%>
+        </tbody>
+      </table>
+    </div>
+<% end %>
+    <div class="row">
+      <div class="col-md-0 offset-md-9">
+        <%= button_to "Create new request", new_shop_request_path, class: "btn btn-outline-primary", type: "button", :method => :get %>
+      </div>
+    </div>
+  </div>
+

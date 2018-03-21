@@ -1,4 +1,4 @@
 <%= simple_form_for([@shop, @request]) do |r| %>
-    <%= r.input :destination_address %>
-    <%= r.button :submit %>
+    <%= r.input :destination_address, required: true %>
+    <%= r.button :submit, class: "btn btn-outline-primary" %>
 <% end %>

@@ -31,6 +31,7 @@ module Astar
       closed_list = Array.new
       current_arr = Array.new
       path = Array.new
+      result = Array.new
       flag = 0
 
       # Push 2 start_node vào open_list
@@ -56,7 +57,15 @@ module Astar
           if current_node.id == @destination_node_1.id || current_node.id == @destination_node_2.id
             closed_list << current_node
             flag = 1
-            return reconstruct(current_node.id, closed_list, path)
+            # return reconstruct(current_node.id, closed_list, path)
+            path = reconstruct(current_node.id, closed_list, path)
+            path.each do |node|
+              tmp = []
+              tmp << Vertice.find(node).lat.to_s
+              tmp << Vertice.find(node).lon.to_s
+              result.push(tmp)
+            end
+            return result
             break
           end
 

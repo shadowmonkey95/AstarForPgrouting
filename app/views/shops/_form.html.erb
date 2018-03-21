@@ -1,7 +1,8 @@
 <%= simple_form_for @shop do |f| %>
-  <%= f.input :name %>
+  <%= f.input :name, required: true %>
   <%= f.input :address %>
   <%= f.input :lon %>
   <%= f.input :lat %>
-  <%= f.button :submit %>
+  <%= f.button :submit, class: "btn btn-outline-primary" %>
 <% end %>
+
