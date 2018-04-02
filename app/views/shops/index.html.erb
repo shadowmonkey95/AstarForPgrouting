@@ -27,10 +27,10 @@
           <td><%= s.updated_at %></td>
           <td colspan="2">
             <%= link_to shop_requests_path(shop_id: s.id) do %>
-                <%= octicon "diff-added" %>
+                <%= octicon "issue-opened" %>
             <% end %>
             <%= link_to shop_path(id: s.id), method: :delete, data: { confirm: "Are you sure?"} do %>
-                <%= octicon "diff-removed" %>
+                <%= octicon "trashcan" %>
             <% end %>
           </td>
         </tr>
