@@ -21,7 +21,7 @@ class ShippersController < ApplicationController
       shipper = Shipper.new(pars)
       shipper.save
       render json: {
-          message: 'succcess',
+          message: 'success',
           data: {
               shipper: shipper
           }
