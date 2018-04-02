@@ -30,4 +30,32 @@ class ShippersController < ApplicationController
 
   end
 
+  def login
+
+    pars = params.require(:shipper).permit(:first_name, :second_name, :email, :password)
+    email = pars[:email]
+    password = pars[:password]
+
+    shipper = Shipper.find_by_email(email)
+    if shipper
+      if shipper.password == password
+        render json: {
+            message: 'success',
+            data: {
+                shipper: shipper
+            }
+        }, status: :ok
+      else
+        render json: {
+            message: 'error',
+        }, status: :ok
+      end
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+
+  end
+
 end
