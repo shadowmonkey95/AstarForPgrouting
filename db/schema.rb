@@ -10,15 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180311213711) do
+ActiveRecord::Schema.define(version: 20180402043527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "postgis"
   enable_extension "hstore"
-  enable_extension "pgrouting"
+  enable_extension "postgis"
 
-  create_table "configuration", id: :serial, force: :cascade do |t|
+  create_table "configuration", id: :integer, default: nil, force: :cascade do |t|
     t.integer "tag_id"
     t.text "tag_key"
     t.text "tag_value"
@@ -30,9 +29,16 @@ ActiveRecord::Schema.define(version: 20180311213711) do
     t.index ["tag_id"], name: "configuration_tag_id_key", unique: true
   end
 
-  create_table "migrations", id: :serial, force: :cascade do |t|
+  create_table "migrations", id: :integer, default: nil, force: :cascade do |t|
     t.string "migration", limit: 255, null: false
     t.integer "batch", null: false
+  end
+
+  create_table "password_resets", id: false, force: :cascade do |t|
+    t.string "email", limit: 255, null: false
+    t.string "token", limit: 255, null: false
+    t.datetime "created_at", precision: 0
+    t.index ["email"], name: "password_resets_email_index"
   end
 
   create_table "planet_osm_line", id: false, force: :cascade do |t|
@@ -372,6 +378,24 @@ ActiveRecord::Schema.define(version: 20180311213711) do
     t.string "destination_address"
     t.integer "shipper_id"
     t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shippers", force: :cascade do |t|
+    t.string "first_name"
+    t.string "second_name"
+    t.string "email"
+    t.string "password"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shippers_logs", force: :cascade do |t|
+    t.integer "shipper_id"
+    t.string "latitude"
+    t.string "longtitude"
+    t.string "time_stamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
