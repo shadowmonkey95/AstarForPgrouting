@@ -4,6 +4,8 @@ class ShippersController < ApplicationController
 
   def index
 
+    @shippers = Shipper.all
+
   end
 
   def register

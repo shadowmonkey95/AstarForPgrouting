@@ -1,1 +1,44 @@
-fuck you bitch
+<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.amber-pink.min.css" />
+<script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<div>
+
+  <div class="container">
+
+    <div class="row text-center">
+      <h3>Shipper</h3>
+    </div>
+
+    <div class="row">
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width: 100%;">
+        <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">id</th>
+          <th>username</th>
+          <th>email</th>
+          <th>password</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <% @shippers.each do |shipper| %>
+
+          <tr>
+
+            <td class="mdl-data-table__cell--non-numeric"><%= shipper.id %></td>
+            <td><%= shipper.first_name + shipper.second_name %></td>
+            <td><%= shipper.email %></td>
+            <td><%= shipper.password %></td>
+
+          </tr>
+
+        <% end %>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
