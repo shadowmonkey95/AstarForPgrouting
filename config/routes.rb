@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   end
   get 'ways/find_path' => 'ways#find_path', as: :find_path
   root 'shops#index'
+
+  resources :shippers
 end
