@@ -1,1 +1,46 @@
+<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.amber-pink.min.css" />
+<script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+<div>
+
+  <div class="container">
+
+    <div class="row text-center">
+      <h3>Locations</h3>
+    </div>
+
+    <div class="row">
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width: 100%;">
+        <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">id</th>
+          <th>shipper id</th>
+          <th>latitude</th>
+          <th>longtitude</th>
+          <th>timestamp</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <% @locations.each do |location| %>
+
+          <tr>
+
+            <td class="mdl-data-table__cell--non-numeric"><%= locations.id %></td>
+            <td><%= locations.shipper_id %></td>
+            <td><%= locations.latitude %></td>
+            <td><%= locations.longtitude %></td>
+            <td><%= locations.timestamp %></td>
+
+          </tr>
+
+        <% end %>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
