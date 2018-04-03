@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shipper_id: 1
+  latitude: MyString
+  longtitude: MyString
+  timestamp: MyString
+
+two:
+  shipper_id: 1
+  latitude: MyString
+  longtitude: MyString
+  timestamp: MyString

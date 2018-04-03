@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402043527) do
+ActiveRecord::Schema.define(version: 20180403014724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,15 @@ ActiveRecord::Schema.define(version: 20180402043527) do
     t.float "maxspeed_backward"
     t.string "force", limit: 1
     t.index ["tag_id"], name: "configuration_tag_id_key", unique: true
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.integer "shipper_id"
+    t.string "latitude"
+    t.string "longtitude"
+    t.string "timestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "migrations", id: :integer, default: nil, force: :cascade do |t|
@@ -387,15 +396,6 @@ ActiveRecord::Schema.define(version: 20180402043527) do
     t.string "second_name"
     t.string "email"
     t.string "password"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "shippers_logs", force: :cascade do |t|
-    t.integer "shipper_id"
-    t.string "latitude"
-    t.string "longtitude"
-    t.string "time_stamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

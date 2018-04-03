@@ -13,5 +13,10 @@ Rails.application.routes.draw do
       post :register
       post :login
     end
+    resources :locations do
+      collection do
+        post :setLocation
+      end
+    end
   end
 end
