@@ -14,10 +14,11 @@ ActiveRecord::Schema.define(version: 20180403014724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "hstore"
   enable_extension "postgis"
+  enable_extension "hstore"
+  enable_extension "pgrouting"
 
-  create_table "configuration", id: :integer, default: nil, force: :cascade do |t|
+  create_table "configuration", id: :serial, force: :cascade do |t|
     t.integer "tag_id"
     t.text "tag_key"
     t.text "tag_value"
@@ -38,16 +39,9 @@ ActiveRecord::Schema.define(version: 20180403014724) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "migrations", id: :integer, default: nil, force: :cascade do |t|
+  create_table "migrations", id: :serial, force: :cascade do |t|
     t.string "migration", limit: 255, null: false
     t.integer "batch", null: false
-  end
-
-  create_table "password_resets", id: false, force: :cascade do |t|
-    t.string "email", limit: 255, null: false
-    t.string "token", limit: 255, null: false
-    t.datetime "created_at", precision: 0
-    t.index ["email"], name: "password_resets_email_index"
   end
 
   create_table "planet_osm_line", id: false, force: :cascade do |t|
