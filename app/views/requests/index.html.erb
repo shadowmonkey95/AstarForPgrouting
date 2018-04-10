@@ -24,10 +24,10 @@
               <td><%= r.created_at %></td>
               <td><%= r.updated_at %></td>
               <td colspan="2">
-                <%= link_to edit_shop_request_path(id: r.id) do %>
+                <%= link_to edit_user_shop_request_path(current_user.id, id: r.id) do %>
                     <%= octicon "pencil" %>
                 <% end %>
-                <%= link_to shop_request_path(id: r.id), method: :delete, data: { confirm: "Are you sure?"} do %>
+                <%= link_to user_shop_request_path(id: r.id), method: :delete, data: { confirm: "Are you sure?"} do %>
                     <%= octicon "trashcan" %>
                 <% end %>
               </td>
@@ -39,7 +39,7 @@
 <% end %>
     <div class="row">
       <div class="col-md-0 offset-md-9">
-        <%= button_to "Create new request", new_shop_request_path, class: "btn btn-outline-primary", type: "button", :method => :get %>
+        <%= button_to "Create new request", new_user_shop_request_path, class: "btn btn-outline-primary", type: "button", :method => :get %>
       </div>
     </div>
   </div>
