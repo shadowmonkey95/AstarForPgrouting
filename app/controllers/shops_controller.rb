@@ -1,6 +1,10 @@
 class ShopsController < ApplicationController
   def index
-    @shops = Shop.all.order("created_at ASC")
+    # @shops = Shop.all.order("created_at ASC")
+    @shops_admin = Shop.all
+    if user_signed_in?
+    @shops = Shop.where(user_id: current_user.id).all
+    end
   end
 
   def show
@@ -8,11 +12,11 @@ class ShopsController < ApplicationController
   end
 
   def new
-    @shop = Shop.new
+    @shop = current_user.shops.build
   end
 
   def create
-    @shop = Shop.new(shop_params)
+    @shop = current_user.shops.build(shop_params)
 
     if @shop.save
       redirect_to root_path
