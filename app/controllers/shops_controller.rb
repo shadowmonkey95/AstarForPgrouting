@@ -4,6 +4,10 @@ class ShopsController < ApplicationController
     @shops_admin = Shop.all
     if user_signed_in?
     @shops = Shop.where(user_id: current_user.id).all
+    @hash = Gmaps4rails.build_markers(@shops) do |shop, marker|
+      marker.lat shop.latitude
+      marker.lng shop.longitude
+    end
     end
   end
 
@@ -17,6 +21,14 @@ class ShopsController < ApplicationController
 
   def create
     @shop = current_user.shops.build(shop_params)
+
+    # respond_to do |format|
+    #   if @shop.save
+    #     format.html  { redirect_back fallback_location: root_path }
+    #   else
+    #     format.html  { render 'new' }
+    #   end
+    # end
 
     if @shop.save
       redirect_to root_path
