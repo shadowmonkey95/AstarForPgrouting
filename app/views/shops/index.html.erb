@@ -10,8 +10,8 @@
               <th>ID</th>
               <th>Name</th>
               <th>Address</th>
-              <th>Lon</th>
-              <th>Lat</th>
+              <th>Longitude</th>
+              <th>Latitude</th>
               <th>Create at</th>
               <th>Update at</th>
               <!--<th colspan="2"></th>-->
@@ -24,8 +24,8 @@
               <td><%= s.id %></td>
               <td><%= s.name %></td>
               <td><%= s.address %></td>
-              <td><%= s.lon %></td>
-              <td><%= s.lat %></td>
+              <td><%= s.longitude %></td>
+              <td><%= s.latitude %></td>
               <td><%= s.created_at %></td>
               <td><%= s.updated_at %></td>
               <td colspan="2">
@@ -45,6 +45,9 @@
     </div>
   <% else %>
       <p>MAN HINH CHO BON KO PHAI ADMIN</p>
+        <div style='width: 800px;'>
+          <div id="map" style='width: 800px; height: 400px;'></div>
+        </div>
         <% if @shops.empty? %>
             <p align="center">You don't have any shops now!!!</p>
         <% else %>
@@ -57,8 +60,8 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Address</th>
-                <th>Lon</th>
-                <th>Lat</th>
+                <th>Longitude</th>
+                <th>Latitude</th>
                 <th>Create at</th>
                 <th>Update at</th>
                 <!--<th colspan="2"></th>-->
@@ -71,8 +74,8 @@
                     <td><%= s.id %></td>
                     <td><%= s.name %></td>
                     <td><%= s.address %></td>
-                    <td><%= s.lon %></td>
-                    <td><%= s.lat %></td>
+                    <td><%= s.longitude %></td>
+                    <td><%= s.latitude %></td>
                     <td><%= s.created_at %></td>
                     <td><%= s.updated_at %></td>
                     <td colspan="2">
@@ -99,3 +102,23 @@
 <% else %>
   <p>MAN HINH CHO BON CHUA LOGIN</p>
 <% end %>
+
+<script>
+    handler = Gmaps.build('Google');
+    handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+        markers = handler.addMarkers([
+            {
+                "lat": 0,
+                "lng": 0,
+                "picture": {
+                    "url": "http://people.mozilla.com/~faaborg/files/shiretoko/firefoxIcon/firefox-32.png",
+                    "width":  32,
+                    "height": 32
+                },
+                "infowindow": "hello!"
+            }
+        ]);
+        handler.bounds.extendWith(markers);
+        handler.fitMapToBounds();
+    });
+</script>
