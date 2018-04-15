@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403014724) do
+ActiveRecord::Schema.define(version: 20180408161343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "hstore"
   enable_extension "postgis"
+  enable_extension "hstore"
+  enable_extension "pgrouting"
 
-  create_table "configuration", id: :integer, default: nil, force: :cascade do |t|
+  create_table "configuration", id: :serial, force: :cascade do |t|
     t.integer "tag_id"
     t.text "tag_key"
     t.text "tag_value"
@@ -38,16 +39,9 @@ ActiveRecord::Schema.define(version: 20180403014724) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "migrations", id: :integer, default: nil, force: :cascade do |t|
+  create_table "migrations", id: :serial, force: :cascade do |t|
     t.string "migration", limit: 255, null: false
     t.integer "batch", null: false
-  end
-
-  create_table "password_resets", id: false, force: :cascade do |t|
-    t.string "email", limit: 255, null: false
-    t.string "token", limit: 255, null: false
-    t.datetime "created_at", precision: 0
-    t.index ["email"], name: "password_resets_email_index"
   end
 
   create_table "planet_osm_line", id: false, force: :cascade do |t|
@@ -391,6 +385,17 @@ ActiveRecord::Schema.define(version: 20180403014724) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["name"], name: "index_roles_on_name"
+    t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
+  end
+
   create_table "shippers", force: :cascade do |t|
     t.string "first_name"
     t.string "second_name"
@@ -407,6 +412,7 @@ ActiveRecord::Schema.define(version: 20180403014724) do
     t.string "lat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -422,8 +428,23 @@ ActiveRecord::Schema.define(version: 20180403014724) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "provider"
+    t.string "uid"
+    t.string "name"
+    t.string "avatar_file_name"
+    t.string "avatar_content_type"
+    t.integer "avatar_file_size"
+    t.datetime "avatar_updated_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "users_roles", id: false, force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
   create_table "vertices", force: :cascade do |t|

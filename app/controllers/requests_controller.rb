@@ -7,14 +7,14 @@ class RequestsController < ApplicationController
   end
 
   def new
-    @request = Request.new
+    @request = @shop.requests.build
   end
 
   def create
-    @request = Request.new(request_params)
+    @request = @shop.requests.build(request_params)
 
     if @request.save!
-      redirect_to shop_requests_path(@shop)
+      redirect_to user_shop_requests_path(@shop)
     else
       render 'new'
     end
@@ -23,7 +23,7 @@ class RequestsController < ApplicationController
   def destroy
     @request = Request.find(params[:id])
     @request.destroy
-    redirect_to shop_requests_path
+    redirect_to user_shop_requests_path
   end
 
   def edit
@@ -32,7 +32,7 @@ class RequestsController < ApplicationController
 
   def update
     if @request.update(request_params)
-      redirect_to shop_requests_path(@shop)
+      redirect_to user_shop_requests_path(@shop)
     else
       render 'edit'
     end
@@ -41,8 +41,8 @@ class RequestsController < ApplicationController
 
   private
   def request_params
-    defaults = { status: 'Pending', shop_id: params[:shop_id]  }
-    params.require(:request).permit(:destination_address, :status, :shop_id).reverse_merge(defaults)
+    defaults = { status: 'Pending' }
+    params.require(:request).permit(:destination_address, :status).reverse_merge(defaults)
   end
 
   def find_shop

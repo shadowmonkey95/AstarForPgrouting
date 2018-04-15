@@ -1,0 +1,21 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+  <%= link_to "GR-Shippers-Shops", root_path, class: "navbar-brand red-text" %>
+
+  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+    <li class="nav-item active">
+      <a><%= link_to "Home", root_path, class: "nav-link" %></a>
+    </li>
+    <% if user_signed_in? == false %>
+        <li>
+          <a><%= link_to "Login", new_user_session_path, class: "nav-link"  %></a>
+        </li>
+        <li>
+          <a><%= link_to "Signup", new_user_registration_path, class: "nav-link" %></a>
+        </li>
+    <% else %>
+        <li>
+          <a><%= link_to "Logout", destroy_user_session_path, class: "nav-link", method: :delete %></a>
+        </li>
+    <% end %>
+  </ul>
+</nav>
