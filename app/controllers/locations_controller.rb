@@ -5,7 +5,7 @@ class LocationsController < ApplicationController
   def index
 
     @locations = Location.all
-    
+
   end
 
   def setLocation
@@ -16,9 +16,6 @@ class LocationsController < ApplicationController
     location.save
     render json: {
         message: 'success',
-        data: {
-            location: location
-        }
     }, status: :ok
 
   end
