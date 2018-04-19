@@ -18,3 +18,9 @@
 .idea/workspace.xml
 /db/schema.rb
 .byebug_history
+.DS_Store
+.idea/
+app/.DS_Store
+lib/.DS_Store
+app/models/.DS_Store
+db/.DS_Store
