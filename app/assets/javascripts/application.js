@@ -17,4 +17,5 @@
 //= require turbolinks
 //= require underscore
 //= require gmaps/google
+//= require jquery.easy-autocomplete
 //= require_tree .
