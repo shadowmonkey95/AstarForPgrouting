@@ -5,7 +5,7 @@ class Shop < ApplicationRecord
   reverse_geocoded_by :latitude, :longitude
   after_validation :reverse_geocode
 
-  has_many :requests
+  has_many :requests, dependent: :destroy
   belongs_to :user, optional: true
   resourcify
 end

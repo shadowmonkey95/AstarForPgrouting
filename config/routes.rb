@@ -26,4 +26,5 @@ Rails.application.routes.draw do
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
   root 'shops#index'
+  # put "/users/:user_id/shops/:shop_id/requests/:id/edit" => "requests#edit"
 end

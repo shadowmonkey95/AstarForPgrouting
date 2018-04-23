@@ -7,7 +7,6 @@ class WaysController < ApplicationController
 
   def show
     # @path = Astar.find_path(2580820540,2579658115,1)
-
   end
 
   def index

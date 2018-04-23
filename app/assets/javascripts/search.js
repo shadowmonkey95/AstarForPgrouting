@@ -15,7 +15,6 @@ document.addEventListener("turbolinks:load", function(){
                 listLocation: "requests",
                 header: "<strong>~~Requests~~</strong>",
             }
-
         ],
         list: {
             onChooseEvent: function() {

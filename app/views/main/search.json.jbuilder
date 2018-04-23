@@ -7,7 +7,7 @@ end
 
 json.requests do
   json.array!(@requests) do |request|
-    json.name request.destination_address
+    json.name request.address
     json.url user_shop_request_path(current_user.id, request.shop_id, request)
   end
 end

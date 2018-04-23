@@ -52,6 +52,14 @@
       <p>MAN HINH CHO BON KO PHAI ADMIN</p>
         <% if @shops.empty? %>
             <p align="center">You don't have any shops now!!!</p>
+
+            <div class="row">
+              <div align="center">
+                <%= button_to "Add Shop", new_user_shop_path(current_user.id), class: "btn btn-outline-primary", type: "button", :method => :get %>
+              </div>
+            </div>
+            <p></p>
+
         <% else %>
         <h1 align="center"> My shop lists</h1>
         <div class="container">
@@ -83,17 +91,22 @@
               </tbody>
             </table>
           </div>
-        <% end %>
+
           <div class="row">
             <div align="center">
               <%= button_to "Add Shop", new_user_shop_path(current_user.id), class: "btn btn-outline-primary", type: "button", :method => :get %>
             </div>
           </div>
-        <p></p>
+          <p></p>
 
           <div>
             <div id="map" style='width: 1111px; height: 400px;'></div>
           </div>
+        <% end %>
+
+          <!--<div>-->
+            <!--<div id="map" style='width: 1111px; height: 400px;'></div>-->
+          <!--</div>-->
         </div>
   <% end %>
 <% else %>
@@ -113,3 +126,4 @@
         window.location = $(this).data("link")
     })
 </script>
+8420594
