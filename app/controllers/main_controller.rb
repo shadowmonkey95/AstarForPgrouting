@@ -3,10 +3,9 @@ class MainController < ApplicationController
   end
 
   def search
-    @shops = Shop.ransack(user_id_in: [current_user.id] ,name_cont: params[:q]).result(distinct: true)
-    @requests = Request.ransack(name_cont: params[:q]).result(distinct: true)
+    @shops = Shop.ransack(user_id_in: [current_user.id], name_cont: params[:q]).result(distinct: true)
+    @requests = Request.ransack(user_id_in: [current_user.id], name_cont: params[:q]).result(distinct: true)
 
-    # render json: {shops: [], requests: []}
     respond_to do |format|
       format.html {}
       format.json {

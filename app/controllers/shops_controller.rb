@@ -2,12 +2,12 @@ class ShopsController < ApplicationController
   def index
     # @shops = Shop.all.order("created_at ASC")
     @shops_admin = Shop.all
-    if user_signed_in?
-    @shops = Shop.where(user_id: current_user.id).all
-    @hash = Gmaps4rails.build_markers(@shops) do |shop, marker|
-      marker.lat shop.latitude
-      marker.lng shop.longitude
-    end
+      if user_signed_in?
+      @shops = Shop.where(user_id: current_user.id).all
+      @hash = Gmaps4rails.build_markers(@shops) do |shop, marker|
+        marker.lat shop.latitude
+        marker.lng shop.longitude
+      end
     end
   end
 

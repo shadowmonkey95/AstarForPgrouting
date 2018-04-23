@@ -6,6 +6,10 @@ class RequestsController < ApplicationController
     @requests = Request.where({ :shop_id => params[:shop_id]}).all
   end
 
+  def show
+    @requests = Request.find(params[:id])
+  end
+
   def new
     @request = @shop.requests.build
   end
@@ -42,7 +46,7 @@ class RequestsController < ApplicationController
   private
   def request_params
     defaults = { status: 'Pending' }
-    params.require(:request).permit(:destination_address, :status).reverse_merge(defaults)
+    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status).reverse_merge(defaults)
   end
 
   def find_shop

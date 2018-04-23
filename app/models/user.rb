@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_many :shops
+  has_many :shops, dependent: :destroy
 
   attr_reader :avatar_remote_url
   has_attached_file :avatar
