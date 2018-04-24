@@ -250,6 +250,3 @@ module Astar
     end
   end
 end
-
-
-
