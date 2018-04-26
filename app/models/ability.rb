@@ -15,7 +15,10 @@ class Ability
     if user.has_role? :admin
       can :manage, :all
     else
-      can :read, :all
+      can :manage, Request, :shop => { :user_id => user.id }
+      can :manage, Shop, user_id: user.id
+      # can :manage, Request, user_id: user.id
+      # can :read, Project, active: true, user_id: user.id
     end
     #
     # The first argument to `can` is the action you are giving the user
