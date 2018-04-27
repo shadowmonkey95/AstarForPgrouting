@@ -16,8 +16,10 @@ class Hungarian
       @path_count = 0;
       @asgn = 0;
       @debug = false;
-      @row = 0
-      @col = 0
+    end
+
+    def show
+      @M
     end
 
     def setUpData(costMatrix)
@@ -28,10 +30,13 @@ class Hungarian
       @M = Array.new(iSize){Array.new(iSize, 0)}
       @rowCover = Array.new(iSize, 0)
       @colCover = Array.new(iSize, 0)
-    end
-
-    def show
-      @M
+      @C_orig = []
+      @path = []
+      @step = 1
+      @path_row_0 = 0
+      @path_col_0 = 0
+      @path_count = 0
+      @asgn = 0
     end
 
     def runMunkres
@@ -61,51 +66,51 @@ class Hungarian
 
       def step_one
         min_in_row = 10000
-        (0..@nrow - 1).each do |i|
-          min_in_row = @C[i][0]
-          (0..@ncol - 1).each do |j|
-            if @C[i][j] < min_in_row
-              min_in_row = @C[i][j]
+        (0..@nrow - 1).each do |r|
+          min_in_row = @C[r][0]
+          (0..@ncol - 1).each do |c|
+            if @C[r][c] < min_in_row
+              min_in_row = @C[r][c]
             end
           end
-          (0..@ncol - 1).each do |j|
-            @C[i][j] -= min_in_row
+          (0..@ncol - 1).each do |c|
+            @C[r][c] -= min_in_row
           end
         end
         @step = 2
       end
 
       def step_two
-        (0..@nrow - 1).each do |i|
-          (0..@ncol - 1).each do |j|
-            if @C[i][j] == 0 && @rowCover[i] == 0 && @colCover[j] == 0
-              @M[i][j] = 1
-              @rowCover[i] = 1
-              @colCover[j] = 1
+        (0..@nrow - 1).each do |r|
+          (0..@ncol - 1).each do |c|
+            if @C[r][c] == 0 && @rowCover[r] == 0 && @colCover[c] == 0
+              @M[r][c] = 1
+              @rowCover[r] = 1
+              @colCover[c] = 1
             end
           end
         end
-        (0..@nrow - 1).each do |i|
-          @rowCover[i] = 0
+        (0..@nrow - 1).each do |r|
+          @rowCover[r] = 0
         end
-        (0..@ncol - 1).each do |j|
-          @colCover[j] = 0
+        (0..@ncol - 1).each do |c|
+          @colCover[c] = 0
         end
         @step = 3
       end
 
       def step_three
-        # byebug
+        byebug
         colCount = 0
-        (0..@nrow - 1).each do |i|
-          (0..@ncol - 1).each do |j|
-            if @M[i][j] == 1
-              @colCover[j] = 1
+        (0..@nrow - 1).each do |r|
+          (0..@ncol - 1).each do |c|
+            if @M[r][c] == 1
+              @colCover[c] = 1
             end
           end
         end
-        (0..@ncol - 1).each do |j|
-          if @colCover[j] == 1
+        (0..@ncol - 1).each do |c|
+          if @colCover[c] == 1
             colCount += 1
           end
         end
@@ -116,18 +121,18 @@ class Hungarian
         end
       end
 
-      def find_a_zero
+      def find_a_zero(coordinates)
         r = 0;
         c = 0;
         done = false;
-        @row = -1;
-        @col = -1;
+        coordinates[0] = -1;
+        coordinates[1] = -1;
         while !done do
           c = 0
           while true do
             if @C[r][c] == 0 && @rowCover[r] == 0 && @colCover[c] == 0
-              @row = r
-              @col = c
+              coordinates[0] = r
+              coordinates[1] = c
               done = true
             end
             c += 1
@@ -138,37 +143,13 @@ class Hungarian
             done = true
           end
         end
-      end
-
-      def find_a_zero_col(row, col)
-        r = 0;
-        c = 0;
-        done = false;
-        row = -1;
-        col = -1;
-        while !done do
-          c = 0
-          while true do
-            if @C[r][c] == 0 && @rowCover[r] == 0 && @colCover[c] == 0
-              row = r
-              col = c
-              done = true
-            end
-            c += 1
-            break if c >= @ncol || done
-          end
-          r += 1
-          if r >= @nrow
-            done = true
-          end
-        end
-        col
+        coordinates
       end
 
       def star_in_row(row)
         tmp = false;
-        (0.. @ncol - 1).each do |i|
-          if @M[row][i] == 1
+        (0.. @ncol - 1).each do |c|
+          if @M[row][c] == 1
             tmp = true
           end
         end
@@ -177,38 +158,38 @@ class Hungarian
 
       def find_star_in_row(row)
         col = -1;
-        (0..@ncol - 1).each do |i|
-          if @M[row][i] == 1
-            col = i
+        (0..@ncol - 1).each do |c|
+          if @M[row][c] == 1
+            col = c
           end
         end
         col
       end
 
       def step_four
-        # byebug
-        @row = -1
-        @col = -1
+        byebug
+        row = -1
+        col = -1
         done = false
+        coordinates = []
+        coordinates << row
+        coordinates << col
         while !done do
-          find_a_zero
-          # row = find_a_zero_row(row, col)
-          # col = find_a_zero_col(row, col)
-          byebug
-          if @row == -1
+          coordinates = find_a_zero(coordinates)
+          if coordinates[0] == -1
             done = true
             @step = 6
           else
-            @M[@row][@col] = 2
-            if star_in_row(@row)
-              @col = find_star_in_row(@row)
-              @rowCover[@row] = 1
-              @colCover[@col] = 0
+            @M[coordinates[0]][coordinates[1]] = 2
+            if star_in_row(coordinates[0])
+              coordinates[1] = find_star_in_row(coordinates[0])
+              @rowCover[coordinates[0]] = 1
+              @colCover[coordinates[1]] = 0
             else
               done = true
               @step = 5
-              @path_row_0 = @row
-              @path_col_0 = @col
+              @path_row_0 = coordinates[0]
+              @path_col_0 = coordinates[1]
             end
           end
         end
@@ -245,11 +226,11 @@ class Hungarian
       end
 
       def clear_covers
-        (0.. @nrow - 1).each do |i|
-          @rowCover[i] = 0
+        (0.. @nrow - 1).each do |r|
+          @rowCover[r] = 0
         end
-        (0.. @ncol - 1).each do |i|
-          @colCover[i] = 0
+        (0.. @ncol - 1).each do |c|
+          @colCover[c] = 0
         end
       end
 
@@ -264,7 +245,7 @@ class Hungarian
       end
 
       def step_five
-        # byebug
+        byebug
         done = false
         r = -1
         c = -1
@@ -313,7 +294,7 @@ class Hungarian
       end
 
       def step_six
-        # byebug
+        byebug
         minval = 1000000
         minval = find_smallest(minval)
         (0.. @nrow - 1).each do |r|
