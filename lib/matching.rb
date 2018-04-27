@@ -1,7 +1,13 @@
+require 'pry'
+require 'pp'
+require 'priority_queue'
+require 'node'
+
 module Matching
   class MatchingClass
 
     require 'algorithm/hungarian.rb'
+    include Astar
 
     def self.match
 
@@ -13,8 +19,9 @@ module Matching
 
       shop_id = 15
       shop = Shop.find_by_id(shop_id)
-      shippers = findShipperArea(shop)
+      shop_osm_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
 
+      shippers = findShipperArea(shop)
       distance = []
       shippers.each do |shipper|
         s = []
@@ -22,51 +29,76 @@ module Matching
         s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, shipper.latitude.to_f, shipper.longtitude.to_f)
         distance << s
       end
-
       closest = distance.sort.first
       shipper_id = closest[0]
+      shipper = Location.find_by_id(shipper_id)
+      shipper_osm_id = findNearestPoint(shipper.latitude.to_f, shipper.longtitude.to_f)
 
-      # sau khi save bill sẽ gửi bill id đến shipper
+      sql = "SELECT * FROM pgr_astar(
+              'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+            ARRAY[#{shipper_osm_id}], ARRAY[#{shop_osm_id}], heuristic :=4 )"
 
+      path = ActiveRecord::Base.connection.execute(sql)
+      # # k = []
+      # # shop_osm_id.each do |l|
+      # #   k << l
+      # # end
+      #
+      # k
+      # if shop_osm_id.present?
+      #   return shop_osm_id
+      # else
+      #   return nil
+      # end
 
-      # Bill : - shop id
-      #        - shipper id
-      #        - status
-      #        - status
-      #        - status
-      #        - status
+      # invoice = Invoice.new
+      # invoice.shop_id = shop_id
+      # invoice.shipper_id = shipper_id
+      #
+      # if invoice.save
+      #   status = 1
+      # else
+      #   status = 2
+      # end
 
     end
 
     private
 
       def self.findShipperArea(shop)
-
         shop_latitude = shop.latitude
         shop_longitude = shop.longitude
-
         k = 0.003
         flag = 0
-
         while flag == 0 do
           latitude_min = shop_latitude.to_f - k
           latitude_max = shop_latitude.to_f + k
           longitude_min = shop_longitude.to_f - k
           longitude_max = shop_longitude.to_f + k
-
           locations = Location.where('latitude < ?', latitude_max.to_s).where('latitude > ?', latitude_min.to_s).where('longtitude < ?', longitude_max.to_s).where('longtitude > ?', longitude_min.to_s)
-
           if locations.count > 0
             flag = 1
           else
             k += 0.003
           end
         end
-
         locations
-
       end
 
+      def self.findNearestPoint(lat, lon)
+        sql = "
+                select id
+                from public.ways_vertices_pgr
+                order by the_geom <-> st_setsrid(st_makepoint(#{lon}, #{lat}),4326)
+                limit 1
+              "
+        nearest_point = ActiveRecord::Base.connection.execute(sql)
+        nearest_point[0]['id']
+      end
+
+      def self.findPath(shipper_osm_id, shop_osm_id)
+
+      end
 
 
       def self.haversineAlgorithm(lat1, lon1, lat2, lon2)
