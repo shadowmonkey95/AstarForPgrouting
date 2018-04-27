@@ -9,7 +9,7 @@
     <div class="container">
       <div class="row">
         <table class="table table-hover">
-          <thead class="thead-dark">
+          <thead>
             <tr>
               <th onClick="window.location.reload()"><%= sortable "id" %></th>
               <th onClick="window.location.reload()"><%= sortable "name" %></th>
@@ -30,8 +30,8 @@
               <td><%= s.address %></td>
               <td><%= s.longitude %></td>
               <td><%= s.latitude %></td>
-              <td><%= s.created_at %></td>
-              <td><%= s.updated_at %></td>
+              <td><%= s.created_at.strftime("%FT%T") %></td>
+              <td><%= s.updated_at.strftime("%FT%T") %></td>
               <td colspan="2">
                 <%= link_to user_shop_requests_path(current_user.id, shop_id: s.id) do %>
                     <%= octicon "issue-opened" %>
@@ -44,6 +44,14 @@
             <%- end -%>
           </tbody>
         </table>
+        <div class="digg_pagination">
+          <div class="page_info">
+            <%= page_entries_info @shops_admin %>
+          </div>
+          <div onClick="window.location.reload()">
+            <%= will_paginate @shops_admin, :container => false %>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -64,7 +72,7 @@
         <div class="container">
           <div class="row">
             <table class="table table-hover">
-              <thead class="thead-dark">
+              <thead>
               <tr>
                 <th onClick="window.location.reload()"><%= sortable "name" %></th>
                 <th onClick="window.location.reload()"><%= sortable "address" %></th>
@@ -89,6 +97,14 @@
               <%- end -%>
               </tbody>
             </table>
+            <div class="digg_pagination">
+              <div class="page_info">
+                <%= page_entries_info @shops %>
+              </div>
+              <div onClick="window.location.reload()">
+              <%= will_paginate @shops, :container => false %>
+              </div>
+            </div>
           </div>
 
           <div class="row">

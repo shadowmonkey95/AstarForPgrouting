@@ -18,4 +18,6 @@
 //= require underscore
 //= require gmaps/google
 //= require jquery.easy-autocomplete
+//= require bootstrap-datepicker
+//= require bootstrap-timepicker
 //= require_tree .

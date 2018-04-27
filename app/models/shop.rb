@@ -1,9 +1,29 @@
 class Shop < ApplicationRecord
-  geocoded_by :address
-  after_validation :geocode
+  geocoded_by :address do |object, results|
+    if results.present?
+      object.latitude = results.first.latitude
+      object.longitude = results.first.longitude
+    else
+      object.latitude = nil
+      object.longitude = nil
+    end
+  end
 
-  reverse_geocoded_by :latitude, :longitude
-  after_validation :reverse_geocode
+  before_validation :geocode, if: :address_changed?
+
+  # validates :address, presence: true
+  validate :found_address_presence
+
+  def found_address_presence
+    if latitude.blank? || longitude.blank?
+      errors.add(:address, "We couldn't find your address, please type it correctly or input longitude and latitude manually")
+    end
+  end
+
+  # after_validation :geocode
+
+  # reverse_geocoded_by :latitude, :longitude
+  # after_validation :reverse_geocode
 
   has_many :requests, dependent: :destroy
   belongs_to :user, optional: true
