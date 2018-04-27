@@ -1,6 +1,7 @@
 class RequestsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
+  before_action :authenticate_user!
   before_action :find_shop
   before_action :find_request, except: [:index, :new, :create]
 
@@ -22,7 +23,7 @@ class RequestsController < ApplicationController
   def create
     @request = @shop.requests.build(request_params)
 
-    if @request.save!
+    if @request.save
       redirect_to user_shop_requests_path(@shop)
     else
       render 'new'
@@ -51,7 +52,7 @@ class RequestsController < ApplicationController
   private
   def request_params
     defaults = { status: 'Pending' }
-    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status).reverse_merge(defaults)
+    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve).reverse_merge(defaults)
   end
 
   def find_shop

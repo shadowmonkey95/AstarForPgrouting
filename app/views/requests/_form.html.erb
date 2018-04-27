@@ -1,7 +1,19 @@
 <%= simple_form_for([current_user, @shop, @request]) do |r| %>
-    <%= r.input :address, required: true %>
-    <%= r.input :longitude %>
-    <%= r.input :latitude %>
+    <%= r.input :address %>
+    <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
+    <div class="form-row">
+      <div class="col">
+        <%= r.input :longitude, class:"form-control" %>
+      </div>
+      <div class="col">
+        <%= r.input :latitude, class:"form-control" %>
+      </div>
+    </div>
     <%= r.input :comment %>
+    <div class='input-append bootstrap-timepicker-component' style='display: inline;'>
+    <%= r.input :reserve, id: "timepicker1", type: "text", class: "form-control input-small" %>
+    </div>
+    <p></p>
     <%= r.button :submit, class: "btn btn-outline-primary" %>
 <% end %>
+

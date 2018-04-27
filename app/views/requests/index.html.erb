@@ -19,8 +19,8 @@
             <tr>
               <td><%= r.address %></td>
               <td><%= r.status %></td>
-              <td><%= r.created_at %></td>
-              <td><%= r.updated_at %></td>
+              <td><%= r.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <td><%= r.updated_at.strftime("%d/%m/%Y %H:%M") %></td>
 
               <td colspan="2">
                 <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
