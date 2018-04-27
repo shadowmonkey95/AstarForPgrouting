@@ -1,8 +1,15 @@
 <%= simple_form_for [current_user, @shop] do |f| %>
   <%= f.input :name, required: true %>
   <%= f.input :address %>
-  <%= f.input :longitude %>
-  <%= f.input :latitude %>
+    <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
+    <div class="form-row">
+      <div class="col">
+        <%= f.input :longitude, class:"form-control" %>
+      </div>
+      <div class="col">
+        <%= f.input :latitude, class:"form-control" %>
+      </div>
+    </div>
   <%= f.button :submit, class: "btn btn-outline-primary" %>
 <% end %>
 
