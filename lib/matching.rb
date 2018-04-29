@@ -11,13 +11,11 @@ module Matching
 
     def self.match
 
-      # costMatrix = [[12, 9, 27, 10, 23], [7, 13, 13, 30, 19], [25, 18, 26, 11, 26], [9, 28, 26, 23, 13], [16, 16, 24, 6, 9]]
-      # hungarian = Hungarian.new
-      # hungarian.setUpData(costMatrix)
-      # hungarian.runMunkres
-      # hungarian.show
+      request_id = 19
+      request = Request.find_by_id(request_id)
+      deposit = request.deposit
 
-      shop_id = 15
+      shop_id = request.shop_id
       shop = Shop.find_by_id(shop_id)
       shop_osm_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
 
@@ -36,28 +34,7 @@ module Matching
       location_osm_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
 
       shipper = Shipper.find_by_id(shipper_id)
-
-      # sql = "SELECT * FROM pgr_astar(
-      #         'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
-      #       ARRAY[#{shipper_osm_id}], ARRAY[#{shop_osm_id}], heuristic :=4 )"
-      #
-      # path = ActiveRecord::Base.connection.execute(sql)
-      # if shop_osm_id.present?
-      #   return shop_osm_id
-      # else
-      #   return nil
-      # end
-      # sql = "
-      #         select lat, lon from public.ways_vertices_pgr
-      #         where id in ('2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657')
-      #       "
-      # paths = ActiveRecord::Base.connection.execute(sql)
-      # roads = "["
-      # paths.each do |path|
-      #   roads += "[" + path['lat'] + ', ' + path['lon'] + "], "
-      # end
-      # roads = roads.chomp(', ')
-      # roads += ']'
+      shipping_cost = shippingCost(distance.first[0])
 
       path = Path.new
       path.shipper_id = shipper_id
@@ -67,9 +44,17 @@ module Matching
       invoice = Invoice.new
       invoice.shop_id = shop_id
       invoice.shipper_id = shipper_id
+      invoice.distance = distance.first[0]
+      invoice.distance2 = distance.first[0]
+      invoice.shipping_cost = shipping_cost
+      invoice.deposit = deposit
+      invoice.user_id = shop.user_id
       invoice.save
+      if invoice.save
+        invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+      end
 
-      # sendNoti(shipper.req_id)
+      sendNoti(shipper.req_id, invoice.id)
 
     end
 
@@ -115,13 +100,17 @@ module Matching
         result
       end
 
-      def self.sendNoti(req_id)
+      def self.shippingCost(distance)
+        distance
+      end
+
+      def self.sendNoti(req_id, invoice_id)
         fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
         registration_ids = [req_id]
         options = {
             data: {
                 data: {
-                    package_id: 12121995
+                    package_id: invoice_id
                 }
             }
 
@@ -131,3 +120,31 @@ module Matching
 
   end
 end
+
+# costMatrix = [[12, 9, 27, 10, 23], [7, 13, 13, 30, 19], [25, 18, 26, 11, 26], [9, 28, 26, 23, 13], [16, 16, 24, 6, 9]]
+# hungarian = Hungarian.new
+# hungarian.setUpData(costMatrix)
+# hungarian.runMunkres
+# hungarian.show
+
+# sql = "SELECT * FROM pgr_astar(
+#         'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+#       ARRAY[#{shipper_osm_id}], ARRAY[#{shop_osm_id}], heuristic :=4 )"
+#
+# path = ActiveRecord::Base.connection.execute(sql)
+# if shop_osm_id.present?
+#   return shop_osm_id
+# else
+#   return nil
+# end
+# sql = "
+#         select lat, lon from public.ways_vertices_pgr
+#         where id in ('2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657')
+#       "
+# paths = ActiveRecord::Base.connection.execute(sql)
+# roads = "["
+# paths.each do |path|
+#   roads += "[" + path['lat'] + ', ' + path['lon'] + "], "
+# end
+# roads = roads.chomp(', ')
+# roads += ']'
