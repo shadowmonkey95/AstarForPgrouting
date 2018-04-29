@@ -1,5 +1,5 @@
 <%= simple_form_for([current_user, @shop, @request]) do |r| %>
-    <%= r.input :address %>
+    <%= r.input :address, label: "Delivery Address" %>
     <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
     <div class="form-row">
       <div class="col">
