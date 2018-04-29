@@ -1,0 +1,12 @@
+<%= simple_form_for @invoice do |f| %>
+    <%= f.input :shop_id %>
+    <%= f.input :shipper_id %>
+    <%= f.input :status %>
+    <%= f.input :distance %>
+    <%= f.input :distance2 %>
+    <%= f.input :shipping_cost %>
+    <%= f.input :deposit %>
+    <%= f.input :user_id %>
+    <%= f.button :submit, class: "btn btn-outline-primary" %>
+<% end %>
+

@@ -1,0 +1,6 @@
+<% @activities.each do |activity| %>
+    <div class="activity">
+      <%= link_to activity.recipient.email, activity.recipient if activity.recipient %>
+      <%= render_activity activity %>
+    </div>
+<% end %>

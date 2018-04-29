@@ -1,0 +1,7 @@
+received an invoices
+
+<% if activity.trackable %>
+    <%= link_to activity.trackable.id, activity.trackable %>
+<% else %>
+    which has since been removed
+<% end %>
