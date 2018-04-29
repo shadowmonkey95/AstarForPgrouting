@@ -21,45 +21,55 @@ module Matching
       shop = Shop.find_by_id(shop_id)
       shop_osm_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
 
-      shippers = findShipperArea(shop)
+      locations = findShipperArea(shop)
       distance = []
-      shippers.each do |shipper|
+      locations.each do |location|
         s = []
-        s << shipper.id
-        s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, shipper.latitude.to_f, shipper.longtitude.to_f)
+        s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
+        s << location.shipper_id
         distance << s
       end
-      closest = distance.sort.first
-      shipper_id = closest[0]
-      shipper = Location.find_by_id(shipper_id)
-      shipper_osm_id = findNearestPoint(shipper.latitude.to_f, shipper.longtitude.to_f)
+      distance = distance.sort_by{ |d| [d[0], d[1]] }
+      shipper_id = distance.first[1]
 
-      sql = "SELECT * FROM pgr_astar(
-              'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
-            ARRAY[#{shipper_osm_id}], ARRAY[#{shop_osm_id}], heuristic :=4 )"
+      location = Location.find_by(shipper_id: shipper_id)
+      location_osm_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
 
-      path = ActiveRecord::Base.connection.execute(sql)
-      # # k = []
-      # # shop_osm_id.each do |l|
-      # #   k << l
-      # # end
+      shipper = Shipper.find_by_id(shipper_id)
+
+      # sql = "SELECT * FROM pgr_astar(
+      #         'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+      #       ARRAY[#{shipper_osm_id}], ARRAY[#{shop_osm_id}], heuristic :=4 )"
       #
-      # k
+      # path = ActiveRecord::Base.connection.execute(sql)
       # if shop_osm_id.present?
       #   return shop_osm_id
       # else
       #   return nil
       # end
-
-      # invoice = Invoice.new
-      # invoice.shop_id = shop_id
-      # invoice.shipper_id = shipper_id
-      #
-      # if invoice.save
-      #   status = 1
-      # else
-      #   status = 2
+      # sql = "
+      #         select lat, lon from public.ways_vertices_pgr
+      #         where id in ('2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657')
+      #       "
+      # paths = ActiveRecord::Base.connection.execute(sql)
+      # roads = "["
+      # paths.each do |path|
+      #   roads += "[" + path['lat'] + ', ' + path['lon'] + "], "
       # end
+      # roads = roads.chomp(', ')
+      # roads += ']'
+
+      path = Path.new
+      path.shipper_id = shipper_id
+      path.path = "[[21.00763660, 105.84384210], [21.00997620, 105.83587080], [21.00863450, 105.85098820], [21.01362710, 105.85242100], [21.00752810, 105.84183030], [21.00757410, 105.84149020], [21.00831750, 105.84839400], [21.01173370, 105.85168910], [21.00955460, 105.83517960], [21.00769480, 105.84070320], [21.00836830, 105.84867990], [21.00990890, 105.85156150], [21.00781900, 105.84022380], [21.00788790, 105.84579370], [21.00760460, 105.84121970], [21.00752020, 105.84269530], [21.00807820, 105.83893330], [21.00949230, 105.83526310], [21.00863140, 105.85146800], [21.00801950, 105.84681810], [21.00948020, 105.83755860], [21.01000750, 105.83591010], [21.01049530, 105.85160090], [21.00927490, 105.85151300], [21.01357430, 105.85178540], [21.00769890, 105.84432140], [21.00815010, 105.84748390], [21.00758610, 105.84135140], [21.01055440, 105.83661410]]"
+      path.save
+
+      invoice = Invoice.new
+      invoice.shop_id = shop_id
+      invoice.shipper_id = shipper_id
+      invoice.save
+
+      # sendNoti(shipper.req_id)
 
     end
 
@@ -96,11 +106,6 @@ module Matching
         nearest_point[0]['id']
       end
 
-      def self.findPath(shipper_osm_id, shop_osm_id)
-
-      end
-
-
       def self.haversineAlgorithm(lat1, lon1, lat2, lon2)
         dLat = (lat2 - lat1).abs * Math::PI / 180
         dLon = (lon2 - lon1).abs * Math::PI / 180
@@ -110,28 +115,19 @@ module Matching
         result
       end
 
-      def self.hungarianAlgorithm
+      def self.sendNoti(req_id)
+        fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
+        registration_ids = [req_id]
+        options = {
+            data: {
+                data: {
+                    package_id: 12121995
+                }
+            }
 
+        }
+        fcm.send(registration_ids, options)
       end
 
   end
 end
-
-# requests = [
-#   {
-#     'latitude' => 21.016363,
-#     'longitude' => 105.821304
-#   },
-#   {
-#     'latitude' => 21.009563,
-#     'longitude' => 105.834732
-#   },
-#   {
-#     'latitude' => 20.965100,
-#     'longitude' => 105.841849
-#   },
-#   {
-#     'latitude' => 21.005897,
-#     'longitude' => 105.843375
-#   }
-# ]
