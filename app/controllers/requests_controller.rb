@@ -52,7 +52,7 @@ class RequestsController < ApplicationController
   private
   def request_params
     defaults = { status: 'Pending' }
-    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve).reverse_merge(defaults)
+    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve, :deposit).reverse_merge(defaults)
   end
 
   def find_shop
