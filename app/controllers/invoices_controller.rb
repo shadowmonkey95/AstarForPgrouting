@@ -1,4 +1,7 @@
 class InvoicesController < ApplicationController
+
+  skip_before_action :verify_authenticity_token
+
   def new
     @invoice = Invoice.new
   end
@@ -11,6 +14,26 @@ class InvoicesController < ApplicationController
     else
       render 'new'
     end
+  end
+
+  def getInvoice
+    # pars = params.require(:invoice).permit(:invoice_id)
+    # invoice_id = pars[:invoice_id]
+    # invoice = Invoice.find_by_id(invoice_id)
+    # if invoice
+    #   render json: {
+    #       message: 'error',
+    #   }, status: :ok
+    # else
+    #   shipper = Shipper.new(pars)
+    #   shipper.save
+    #   render json: {
+    #       message: 'success',
+    #       data: {
+    #           shipper: shipper
+    #       }
+    #   }, status: :ok
+    # end
   end
 
   private
