@@ -110,7 +110,7 @@ module Matching
         options = {
             data: {
                 data: {
-                    package_id: invoice_id
+                    invoice_id: invoice_id
                 }
             }
 
