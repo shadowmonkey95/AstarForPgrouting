@@ -7,14 +7,25 @@ class LocationsController < ApplicationController
   end
 
   def setLocation
-
     pars = params.require(:location).permit(:shipper_id, :latitude, :longtitude, :timestamp)
-
-    location = Location.new(pars)
-    location.save
-    render json: {
-        message: 'success',
-    }, status: :ok
+    shipper_id = pars['shipper_id']
+    latitude = pars['latitude']
+    longitude = pars['longtitude']
+    timestamp = pars['timestamp']
+    location = Location.find_by(shipper_id: shipper_id)
+    if location
+      location.latitude = latitude
+      location.longtitude = longitude
+      location.timestamp = timestamp
+      location.save
+      render json: {
+          message: 'success',
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
 
   end
 
