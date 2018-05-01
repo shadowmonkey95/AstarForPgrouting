@@ -26,11 +26,11 @@ module Matching
       # end
       # ways
 
-      (106..1066).each do |i|
-        shipper = Shipper.find_by_id(i)
-        shipper.id = shipper.id - 105
-        shipper.save
-      end
+      # (106..1066).each do |i|
+      #   shipper = Shipper.find_by_id(i)
+      #   shipper.id = shipper.id - 105
+      #   shipper.save
+      # end
 
 
       # request_id = 19
@@ -77,6 +77,8 @@ module Matching
       # end
       #
       # sendNoti(shipper.req_id, invoice.id)
+
+      sendNoti('e3EaolzOnas:APA91bEEicN6R9GktdCyYPiqJAdah1oDDz5rqdKZyBGhFlhubCTMAIe4FdDvi3smPCdXak2OeAKX9eMRaI7gQz6VcKlAkQTGIQEOEFdsOsUVw3B2POuC1wFduT3iBCecPDXf4pR8Qm5i', 1)
 
     end
 

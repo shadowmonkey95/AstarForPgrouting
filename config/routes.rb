@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   resources :locations
   resources :invoices
+  resources :paths
   resources :activities
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
