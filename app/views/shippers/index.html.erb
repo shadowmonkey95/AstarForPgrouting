@@ -20,16 +20,16 @@
                         </a>
                     </li>
                     <li class="nav-item active">
-                        <%= link_to shippers_path, class: "nav-link" do %>
-                          <i class="material-icons">directions_bike</i>
-                          <p>Shippers</p>
-                        <% end %>
+                      <%= link_to shippers_path, class: "nav-link" do %>
+                        <i class="material-icons">directions_bike</i>
+                        <p>Shippers</p>
+                      <% end %>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../examples/table.html">
-                            <i class="material-icons">location_on</i>
-                            <p>Locations</p>
-                        </a>
+                      <%= link_to locations_path, class: "nav-link" do %>
+                        <i class="material-icons">location_on</i>
+                        <p>Locations</p>
+                      <% end %>
                     </li>
                 </ul>
             </div>
@@ -101,7 +101,7 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header card-header-primary">
-                                    <h4 class="card-title ">Shipper</h4>
+                                    <h4 class="card-title ">Shippers</h4>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -151,54 +151,3 @@
 <%= javascript_include_tag '/assets/js/plugins/bootstrap-notify.js' %>
 <%= javascript_include_tag '/assets/js/material-dashboard.js?v=2.0.0' %>
 <%= javascript_include_tag '/assets/js/plugins/demo.js' %>
-
-
-<script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
-<link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
-
-<div id='map' style='width: 800px; height: 500px;'></div>
-<script>
-mapboxgl.accessToken = 'pk.eyJ1IjoidG9ueW1pbmgiLCJhIjoiY2o5c2traDNiMDlucjMzcGxwZHQ3Mm9neCJ9.oyCFGycUCZd3n4b3uObbWQ';
-var map = new mapboxgl.Map({
-container: 'map',
-style: 'mapbox://styles/mapbox/streets-v10',
-center: [105.834883, 21.009476],
-zoom: 15
-});
-
-map.on('load', function () {
-
-    map.addLayer({
-        "id": "route",
-        "type": "line",
-        "source": {
-            "type": "geojson",
-            "data": {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "LineString",
-                    "coordinates": [["105.85242100", "21.01362710"], ["105.85178540", "21.01357430"], ["105.85168910", "21.01173370"], ["105.85160090", "21.01049530"], ["105.85156150", "21.00990890"], ["105.85151300", "21.00927490"], ["105.85146800", "21.00863140"], ["105.85098820", "21.00863450"], ["105.84867990", "21.00836830"], ["105.84839400", "21.00831750"], ["105.84748390", "21.00815010"], ["105.84681810", "21.00801950"], ["105.84579370", "21.00788790"], ["105.84432140", "21.00769890"], ["105.84384210", "21.00763660"], ["105.84269530", "21.00752020"], ["105.84183030", "21.00752810"], ["105.84149020", "21.00757410"], ["105.84135140", "21.00758610"], ["105.84121970", "21.00760460"], ["105.84070320", "21.00769480"], ["105.84022380", "21.00781900"], ["105.83893330", "21.00807820"], ["105.83755860", "21.00948020"], ["105.83661410", "21.01055440"], ["105.83591010", "21.01000750"], ["105.83587080", "21.00997620"], ["105.83526310", "21.00949230"], ["105.83517960", "21.00955460"]]
-                }
-            }
-        },
-        "layout": {
-            "line-join": "round",
-            "line-cap": "round"
-        },
-        "paint": {
-            "line-color": "#888",
-            "line-width": 8
-        }
-    });
-});
-
-</script>
-
-'3657'
-'10726'
-'13943'
-
-'2185'
-'1270'
-'11897'

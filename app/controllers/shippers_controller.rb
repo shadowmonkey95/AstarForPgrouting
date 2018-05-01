@@ -4,7 +4,7 @@ class ShippersController < ApplicationController
 
   def index
 
-    @shippers = Shipper.paginate(:page => params[:page], :per_page => 10)
+    @shippers = Shipper.order('id ASC').paginate(:page => params[:page], :per_page => 10)
 
   end
 

@@ -3,9 +3,7 @@ class LocationsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-
-    @locations = Location.all
-
+    @locations = Location.order('shipper_id ASC').paginate(:page => params[:page], :per_page => 10)
   end
 
   def setLocation
