@@ -1,11 +1,11 @@
-<ul class="invoicer">
+<ul class="invoice-create">
   <a href="#" id="open_invoice">
-    <%= render 'counter', counter: invoices.count %>
+    <%= render "invoices/counter", counter: invoices.count if invoices %>
   </a>
   <div id="invoiceContainer" style="display: none;">
     <div id="invoicesBody" class="invoices">
       <ul id="invoiceList">
-        <%= render invoices %>
+        <%= render invoices if invoices %>
       </ul>
     </div>
     <div id="invoiceFooter"></div>

@@ -13,15 +13,20 @@
           <a><%= link_to "Signup", new_user_registration_path, class: "nav-link" %></a>
         </li>
     <% else %>
-        <li>
-          <a><%= link_to "Logout", destroy_user_session_path, class: "nav-link", method: :delete %></a>
-        </li>
+        <%= form_with url: search_path, local: true, method: :get, html: {class: "form-inline my-2 my-lg-0"} do |form| %>
+            <%= form.text_field :q, placeholder: "Search", data: { behavior: "autocomplete"}, class: "form-control mr-sm-2"%>
+            <%= form.button "Search", class: "btn btn-outline-success my-2 my-sm-0" %>
+        <% end %>
+
+          <li class="nav-item btn-group" data-behavior="activities">
+              <%= render "invoices/invoice_center", invoices: @invoices %>
+          </li>
+          <li>
+            <a><%= link_to "Logout", destroy_user_session_path, class: "nav-link", method: :delete %></a>
+          </li>
+
     <% end %>
 
-    <%= form_with url: search_path, local: true, method: :get, html: {class: "form-inline my-2 my-lg-0"} do |form| %>
-        <%= form.text_field :q, placeholder: "Search", data: { behavior: "autocomplete"}, class: "form-control mr-sm-2"%>
-        <%= form.button "Search", class: "btn btn-outline-success my-2 my-sm-0" %>
-    <% end %>
     <!--<form class="form-inline my-2 my-lg-0">-->
       <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" data-behavior="autocomplete">-->
       <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->

@@ -23,7 +23,7 @@ $(document).ready(function()
 
     (function() {
         App.invoices = App.cable.subscriptions.create({
-                channel: 'invoicesChannel'
+                channel: 'InvoicesChannel'
             },
             {
                 connected: function() {},
@@ -41,12 +41,7 @@ $(document).ready(function()
                     var $counter, val;
                     $counter = $('#invoice-counter');
                     val = parseInt($counter.text());
-                    val++;
-                    return $counter.css({
-                    }).text(val)
-                        .css({
-                            top: '-10px'
-                        })
+                    val++
                 }
             });
     }).call(this);

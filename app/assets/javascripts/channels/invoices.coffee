@@ -16,4 +16,4 @@ App.invoices = App.cable.subscriptions.create "InvoicesChannel",
     val++
     $counter
       .text(val)
-      .css({top: '-10px'})
+#      .css({top: '-10px'})

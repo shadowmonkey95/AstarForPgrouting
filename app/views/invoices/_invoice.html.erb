@@ -1,4 +1,4 @@
 <li>
-  <%= invoice.shop_id %>
-  <span> <%= invoice.id %></span>
+  Found a shipper for <%= link_to "#{Shop.find(invoice.shop_id).name}", user_shop_path(invoice.user_id, invoice.shop_id) %>
+
 </li>

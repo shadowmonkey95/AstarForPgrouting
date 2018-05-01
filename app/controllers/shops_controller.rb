@@ -1,6 +1,6 @@
 class ShopsController < ApplicationController
   helper_method :sort_column, :sort_direction
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :invoice_notification
   load_and_authorize_resource :through => :current_user
   def index
     # @shops = Shop.all.order("created_at ASC")
@@ -50,6 +50,9 @@ class ShopsController < ApplicationController
   end
 
   private
+  def invoice_notification
+    @invoices = Invoice.where(:user_id => current_user.id).reverse
+  end
 
   def shop_params
     params.require(:shop).permit(:name, :address, :longitude, :latitude)
