@@ -9,7 +9,6 @@ class ShippersController < ApplicationController
   end
 
   def register
-
     pars = params.require(:shipper).permit(:first_name, :second_name, :email, :password, :req_id)
     email = pars[:email]
     shipper = Shipper.find_by(email: email)
@@ -22,9 +21,9 @@ class ShippersController < ApplicationController
       shipper.save
       render json: {
           message: 'success',
-          # data: {
-          #     shipper: shipper
-          # }
+          data: {
+              shipper: shipper
+          }
       }, status: :ok
     end
 
