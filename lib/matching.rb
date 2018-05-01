@@ -11,14 +11,27 @@ module Matching
 
     def self.match
 
-      sql = "
-              SELECT * FROM pgr_astar(
-              'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
-              ARRAY[2185, 1270, 11897], ARRAY[3657, 10726, 13943], heuristic :=4 );
-            "
+      # point_id = ['2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657']
+      # ways = []
+      # (0..28).each do |i|
+      #   sql = "
+      #           select lat, lon from public.ways_vertices_pgr
+      #           where id = #{point_id[i]}
+      #         "
+      #   path = ActiveRecord::Base.connection.execute(sql)
+      #   point = []
+      #   point << path[0]['lon']
+      #   point << path[0]['lat']
+      #   ways << point
+      # end
+      # ways
 
-      path = ActiveRecord::Base.connection.execute(sql)
-      path
+      (106..1066).each do |i|
+        shipper = Shipper.find_by_id(i)
+        shipper.id = shipper.id - 105
+        shipper.save
+      end
+
 
       # request_id = 19
       # request = Request.find_by_id(request_id)
