@@ -15,7 +15,7 @@ class InvoicesController < ApplicationController
       render 'new'
     end
   end
-  
+
   def show
     invoice = Invoice.find_by_id(params[:id])
     render json: {
