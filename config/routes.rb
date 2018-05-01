@@ -34,6 +34,7 @@ Rails.application.routes.draw do
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
   root 'shops#index'
+  mount ActionCable.server => '/cable'
   # devise_scope :user do
   #   root to: "devise/sessions#new"
   # end

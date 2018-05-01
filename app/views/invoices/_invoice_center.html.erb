@@ -1,0 +1,13 @@
+<ul class="invoicer">
+  <a href="#" id="open_invoice">
+    <%= render 'counter', counter: invoices.count %>
+  </a>
+  <div id="invoiceContainer" style="display: none;">
+    <div id="invoicesBody" class="invoices">
+      <ul id="invoiceList">
+        <%= render invoices %>
+      </ul>
+    </div>
+    <div id="invoiceFooter"></div>
+  </div>
+</ul>
