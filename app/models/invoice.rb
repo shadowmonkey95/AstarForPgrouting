@@ -1,5 +1,5 @@
 class Invoice < ApplicationRecord
   include PublicActivity::Model
-  tracked
+  # tracked
   # @invoice.create_activity key: 'invoice.new'
 end

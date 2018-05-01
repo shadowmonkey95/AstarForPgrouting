@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :shops, dependent: :destroy
+  has_many :notifications, foreign_key: :recipient_id
 
   attr_reader :avatar_remote_url
   has_attached_file :avatar
