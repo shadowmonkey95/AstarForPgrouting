@@ -6,7 +6,7 @@ class PathsController < ApplicationController
       render json: {
           message: 'success',
           data: {
-            path: path.path
+            path: path
           }
       }, status: :ok
     else
