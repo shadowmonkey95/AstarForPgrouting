@@ -22,8 +22,10 @@ class LocationsController < ApplicationController
           message: 'success',
       }, status: :ok
     else
+      location = Location.new(pars)
+      location.save
       render json: {
-          message: 'error',
+          message: 'success',
       }, status: :ok
     end
 
