@@ -15,25 +15,15 @@ class InvoicesController < ApplicationController
       render 'new'
     end
   end
-
-  def getInvoice
-    # pars = params.require(:invoice).permit(:invoice_id)
-    # invoice_id = pars[:invoice_id]
-    # invoice = Invoice.find_by_id(invoice_id)
-    # if invoice
-    #   render json: {
-    #       message: 'error',
-    #   }, status: :ok
-    # else
-    #   shipper = Shipper.new(pars)
-    #   shipper.save
-    #   render json: {
-    #       message: 'success',
-    #       data: {
-    #           shipper: shipper
-    #       }
-    #   }, status: :ok
-    # end
+  
+  def show
+    invoice = Invoice.find_by_id(params[:id])
+    render json: {
+        message: 'success',
+        data: {
+          invoice: invoice
+        }
+    }, status: :ok
   end
 
   private

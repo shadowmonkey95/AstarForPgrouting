@@ -25,11 +25,7 @@ Rails.application.routes.draw do
   end
 
   resources :locations
-  resources :invoices do
-    collection do
-      get :getInvoice
-    end
-  end
+  resources :invoices
   resources :activities
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
