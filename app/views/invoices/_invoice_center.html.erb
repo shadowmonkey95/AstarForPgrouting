@@ -1,0 +1,17 @@
+<ul class="invoice-create">
+  <a href="#" id="open_invoice">
+    <%= render "invoices/counter", counter: invoices.count if invoices %>
+  </a>
+  <div id="invoiceContainer" style="display: none;">
+    <div id="invoicesBody" class="invoices">
+      <ul id="invoiceList">
+        <% if invoices.count == 0 %>
+            You don't have any new notifications
+        <% else %>
+          <%= render invoices if invoices %>
+        <% end %>
+      </ul>
+    </div>
+    <!--<div id="invoiceFooter"></div>-->
+  </div>
+</ul>

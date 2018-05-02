@@ -25,12 +25,17 @@ Rails.application.routes.draw do
   end
 
   resources :locations
-  resources :invoices
+  resources :invoices do
+    collection do
+      post :mark_as_read
+    end
+  end
   resources :paths
   resources :activities
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
   root 'shops#index'
+  mount ActionCable.server => '/cable'
   # devise_scope :user do
   #   root to: "devise/sessions#new"
   # end
