@@ -3,9 +3,13 @@ class ShippersController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-
     @shippers = Shipper.order('id ASC').paginate(:page => params[:page], :per_page => 10)
+  end
 
+  def destroy
+    @shipper = Shipper.find_by_id(params[:id])
+    @shipper.destroy
+    redirect_to shippers_path
   end
 
   def register
