@@ -4,6 +4,18 @@ class ShippersController < ApplicationController
 
   def index
     @shippers = Shipper.order('id ASC').paginate(:page => params[:page], :per_page => 10)
+
+    fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
+    registration_ids = ['e_X_xBOyKEE:APA91bGM3eKU8tQYaXdSCoFqDiBUtqscxUJCut71vfdSWCB0ZEZfL48f3Qe7-I9uXQoBka-XjwiyorxhG7REVSPUW6w__R4-qaMUYtxqq4hOtCzCKZuyAKISRZYQBUQXEn61zf-g2I7T']
+    options = {
+        data: {
+            data: {
+                invoice_id: 1
+            }
+        }
+
+    }
+    fcm.send(registration_ids, options)
   end
 
   def destroy

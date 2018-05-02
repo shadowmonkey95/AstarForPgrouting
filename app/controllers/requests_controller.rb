@@ -1,4 +1,7 @@
 class RequestsController < ApplicationController
+
+  include Matching
+
   helper_method :sort_column, :sort_direction
 
   before_action :authenticate_user!, :invoice_notification
@@ -22,8 +25,8 @@ class RequestsController < ApplicationController
 
   def create
     @request = @shop.requests.build(request_params)
-
     if @request.save
+      MatchingClass.match(@request.id)
       redirect_to user_shop_requests_path(@shop)
     else
       render 'new'
