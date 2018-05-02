@@ -9,7 +9,7 @@ module Matching
     require 'algorithm/hungarian.rb'
     include Astar
 
-    def self.match
+    def self.match(request_id)
 
       # point_id = ['2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657']
       # ways = []
@@ -34,53 +34,51 @@ module Matching
 
 
       # request_id = 19
-      # request = Request.find_by_id(request_id)
-      # deposit = request.deposit
-      #
-      # shop_id = request.shop_id
-      # shop = Shop.find_by_id(shop_id)
-      # shop_osm_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
-      #
-      # locations = findShipperArea(shop)
-      # distance = []
-      # locations.each do |location|
-      #   s = []
-      #   s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
-      #   s << location.shipper_id
-      #   distance << s
-      # end
-      # distance = distance.sort_by{ |d| [d[0], d[1]] }
-      # shipper_id = distance.first[1]
-      #
-      # location = Location.find_by(shipper_id: shipper_id)
-      # location_osm_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
-      #
-      # shipper = Shipper.find_by_id(shipper_id)
-      # shipping_cost = shippingCost(distance.first[0])
-      #
-      # path = Path.new
-      # path.shipper_id = shipper_id
-      # path.path = "[[21.00763660, 105.84384210], [21.00997620, 105.83587080], [21.00863450, 105.85098820], [21.01362710, 105.85242100], [21.00752810, 105.84183030], [21.00757410, 105.84149020], [21.00831750, 105.84839400], [21.01173370, 105.85168910], [21.00955460, 105.83517960], [21.00769480, 105.84070320], [21.00836830, 105.84867990], [21.00990890, 105.85156150], [21.00781900, 105.84022380], [21.00788790, 105.84579370], [21.00760460, 105.84121970], [21.00752020, 105.84269530], [21.00807820, 105.83893330], [21.00949230, 105.83526310], [21.00863140, 105.85146800], [21.00801950, 105.84681810], [21.00948020, 105.83755860], [21.01000750, 105.83591010], [21.01049530, 105.85160090], [21.00927490, 105.85151300], [21.01357430, 105.85178540], [21.00769890, 105.84432140], [21.00815010, 105.84748390], [21.00758610, 105.84135140], [21.01055440, 105.83661410]]"
-      # path.save
-      #
-      # invoice = Invoice.new
-      # invoice.shop_id = shop_id
-      # invoice.shipper_id = shipper_id
-      # invoice.distance = distance.first[0]
-      # invoice.distance2 = distance.first[0]
-      # invoice.shipping_cost = shipping_cost
-      # invoice.deposit = deposit
-      # invoice.user_id = shop.user_id
-      # invoice.save
-      # if invoice.save
-      #   invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-      # end
-      #
+      request = Request.find_by_id(request_id)
+      deposit = request.deposit
+
+      shop_id = request.shop_id
+      shop = Shop.find_by_id(shop_id)
+      shop_osm_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
+
+      locations = findShipperArea(shop)
+      distance = []
+      locations.each do |location|
+        s = []
+        s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
+        s << location.shipper_id
+        distance << s
+      end
+      distance = distance.sort_by{ |d| [d[0], d[1]] }
+      shipper_id = distance.first[1]
+
+      location = Location.find_by(shipper_id: shipper_id)
+      location_osm_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
+
+      shipper = Shipper.find_by_id(shipper_id)
+      shipping_cost = shippingCost(distance.first[0])
+
+      path = Path.new
+      path.shipper_id = shipper_id
+      path.path = "[[21.00763660, 105.84384210], [21.00997620, 105.83587080], [21.00863450, 105.85098820], [21.01362710, 105.85242100], [21.00752810, 105.84183030], [21.00757410, 105.84149020], [21.00831750, 105.84839400], [21.01173370, 105.85168910], [21.00955460, 105.83517960], [21.00769480, 105.84070320], [21.00836830, 105.84867990], [21.00990890, 105.85156150], [21.00781900, 105.84022380], [21.00788790, 105.84579370], [21.00760460, 105.84121970], [21.00752020, 105.84269530], [21.00807820, 105.83893330], [21.00949230, 105.83526310], [21.00863140, 105.85146800], [21.00801950, 105.84681810], [21.00948020, 105.83755860], [21.01000750, 105.83591010], [21.01049530, 105.85160090], [21.00927490, 105.85151300], [21.01357430, 105.85178540], [21.00769890, 105.84432140], [21.00815010, 105.84748390], [21.00758610, 105.84135140], [21.01055440, 105.83661410]]"
+      path.save
+
+      invoice = Invoice.new
+      invoice.shop_id = shop_id
+      invoice.shipper_id = shipper_id
+      invoice.distance = distance.first[0]
+      invoice.distance2 = distance.first[0]
+      invoice.shipping_cost = shipping_cost
+      invoice.deposit = deposit
+      invoice.user_id = shop.user_id
+      invoice.save
+      if invoice.save
+        invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+      end
+
       # sendNoti(shipper.req_id, invoice.id)
 
-      # sendNoti('e3EaolzOnas:APA91bEEicN6R9GktdCyYPiqJAdah1oDDz5rqdKZyBGhFlhubCTMAIe4FdDvi3smPCdXak2OeAKX9eMRaI7gQz6VcKlAkQTGIQEOEFdsOsUVw3B2POuC1wFduT3iBCecPDXf4pR8Qm5i', 1)
-      # sendNoti('cAWMBPvcJpk:APA91bH-QcE4PZI7qRtOd-Y9vHlQXuV7L-v-0INQcwn7tagv9C3LN3lSfG4PsS-yY3pIi3P7KBofWIVwtAtryE100d45VubEbJ32tTACvvMD04hRVdwaAuA1YqpT-cE-Q_-2yS31NMUt', 1)
-
+      # sendNoti('e_X_xBOyKEE:APA91bGM3eKU8tQYaXdSCoFqDiBUtqscxUJCut71vfdSWCB0ZEZfL48f3Qe7-I9uXQoBka-XjwiyorxhG7REVSPUW6w__R4-qaMUYtxqq4hOtCzCKZuyAKISRZYQBUQXEn61zf-g2I7T', 1)
 
     end
 
