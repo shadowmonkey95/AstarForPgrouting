@@ -39,7 +39,7 @@ module Matching
 
       shop_id = request.shop_id
       shop = Shop.find_by_id(shop_id)
-      shop_osm_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
+      shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
 
       locations = findShipperArea(shop)
       distance = []
@@ -53,14 +53,38 @@ module Matching
       shipper_id = distance.first[1]
 
       location = Location.find_by(shipper_id: shipper_id)
-      location_osm_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
+      location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
 
       shipper = Shipper.find_by_id(shipper_id)
       shipping_cost = shippingCost(distance.first[0])
 
+      # SELECT * FROM pgr_astar(
+      #
+      #     'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+      #
+      #     ARRAY[6364], ARRAY[11736], heuristic :=4 );
+      sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+            ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4 )"
+      result = ActiveRecord::Base.connection.execute(sql)
+
+      node_result = Array.new
+      result.each do |result|
+        node_result << result['node']
+      end
+
+      path_result = Array.new
+      node_result.each do |node|
+        tmp = Array.new
+        tmp << Vertice.find(node).lat.to_s
+        tmp << Vertice.find(node).lon.to_s
+        path_result << tmp
+      end
+
+
       path = Path.new
       path.shipper_id = shipper_id
-      path.path = "[[21.00763660, 105.84384210], [21.00997620, 105.83587080], [21.00863450, 105.85098820], [21.01362710, 105.85242100], [21.00752810, 105.84183030], [21.00757410, 105.84149020], [21.00831750, 105.84839400], [21.01173370, 105.85168910], [21.00955460, 105.83517960], [21.00769480, 105.84070320], [21.00836830, 105.84867990], [21.00990890, 105.85156150], [21.00781900, 105.84022380], [21.00788790, 105.84579370], [21.00760460, 105.84121970], [21.00752020, 105.84269530], [21.00807820, 105.83893330], [21.00949230, 105.83526310], [21.00863140, 105.85146800], [21.00801950, 105.84681810], [21.00948020, 105.83755860], [21.01000750, 105.83591010], [21.01049530, 105.85160090], [21.00927490, 105.85151300], [21.01357430, 105.85178540], [21.00769890, 105.84432140], [21.00815010, 105.84748390], [21.00758610, 105.84135140], [21.01055440, 105.83661410]]"
+      # path.path = "[[21.00763660, 105.84384210], [21.00997620, 105.83587080], [21.00863450, 105.85098820], [21.01362710, 105.85242100], [21.00752810, 105.84183030], [21.00757410, 105.84149020], [21.00831750, 105.84839400], [21.01173370, 105.85168910], [21.00955460, 105.83517960], [21.00769480, 105.84070320], [21.00836830, 105.84867990], [21.00990890, 105.85156150], [21.00781900, 105.84022380], [21.00788790, 105.84579370], [21.00760460, 105.84121970], [21.00752020, 105.84269530], [21.00807820, 105.83893330], [21.00949230, 105.83526310], [21.00863140, 105.85146800], [21.00801950, 105.84681810], [21.00948020, 105.83755860], [21.01000750, 105.83591010], [21.01049530, 105.85160090], [21.00927490, 105.85151300], [21.01357430, 105.85178540], [21.00769890, 105.84432140], [21.00815010, 105.84748390], [21.00758610, 105.84135140], [21.01055440, 105.83661410]]"
+      path.path = path_result
       path.save
 
       invoice = Invoice.new
@@ -72,9 +96,9 @@ module Matching
       invoice.deposit = deposit
       invoice.user_id = shop.user_id
       invoice.save
-      if invoice.save
-        invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-      end
+      # if invoice.save
+      #   invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+      # end
 
       # sendNoti(shipper.req_id, invoice.id)
 
@@ -103,6 +127,7 @@ module Matching
         end
         locations
       end
+
 
       def self.findNearestPoint(lat, lon)
         sql = "
