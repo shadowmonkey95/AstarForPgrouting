@@ -25,7 +25,11 @@ Rails.application.routes.draw do
   end
 
   resources :locations
-  resources :invoices
+  resources :invoices do
+    collection do
+      post :mark_as_read
+    end
+  end
   resources :paths
   resources :activities
 

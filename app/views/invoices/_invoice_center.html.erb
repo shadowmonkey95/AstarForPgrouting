@@ -5,9 +5,13 @@
   <div id="invoiceContainer" style="display: none;">
     <div id="invoicesBody" class="invoices">
       <ul id="invoiceList">
-        <%= render invoices if invoices %>
+        <% if invoices.count == 0 %>
+            You don't have any new notifications
+        <% else %>
+          <%= render invoices if invoices %>
+        <% end %>
       </ul>
     </div>
-    <div id="invoiceFooter"></div>
+    <!--<div id="invoiceFooter"></div>-->
   </div>
 </ul>

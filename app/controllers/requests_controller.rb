@@ -1,7 +1,7 @@
 class RequestsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :invoice_notification
   before_action :find_shop
   before_action :find_request, except: [:index, :new, :create]
 
@@ -53,6 +53,10 @@ class RequestsController < ApplicationController
   def request_params
     defaults = { status: 'Pending' }
     params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve, :deposit).reverse_merge(defaults)
+  end
+
+  def invoice_notification
+    @invoices = Invoice.where(:user_id => current_user.id, read_at: nil).reverse
   end
 
   def find_shop

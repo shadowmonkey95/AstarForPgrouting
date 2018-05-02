@@ -51,7 +51,7 @@ class ShopsController < ApplicationController
 
   private
   def invoice_notification
-    @invoices = Invoice.where(:user_id => current_user.id).reverse
+    @invoices = Invoice.where(:user_id => current_user.id, read_at: nil).reverse
   end
 
   def shop_params

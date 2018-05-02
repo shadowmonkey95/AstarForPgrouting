@@ -1,4 +1,4 @@
-$(document).ready(function()
+$(document).on('turbolinks:load', function()
 {
     // debugger;
     // open invoice center on click
@@ -6,6 +6,11 @@ $(document).ready(function()
     {
         $("#invoiceContainer").fadeToggle(300);
         $("#invoice_count").fadeOut("fast");
+        $.ajax({
+            url: "/invoices/mark_as_read",
+            dataType: "JSON",
+            method: "POST"
+        });
         return false;
     });
 
@@ -19,6 +24,15 @@ $(document).ready(function()
     $("#invoiceContainer").click(function()
     {
         return false;
+    });
+
+    $('#invoiceList li').click(function(){
+        window.location.href = $(this).find('a').first().attr('href');
+        // $.ajax({
+        //     url: "/invoices/mark_as_read",
+        //     dataType: "JSON",
+        //     method: "POST"
+        // });
     });
 
     (function() {

@@ -129,6 +129,7 @@ ul #invoiceList
   width: 300px;
   z-index: 0;
   display: none;
+  margin-top: -40px;
 }
 
 
@@ -179,7 +180,12 @@ ul #invoiceList
   border-top: 1px solid #dddddd;
 }
 
-svg.octicon {
+svg.octicon-bell {
   width: 25px;
   height: 30px;
+  position: inherit;
+  top: 4px;
 }
+ .form-inline {
+   flex-flow: nowrap;
+ }
