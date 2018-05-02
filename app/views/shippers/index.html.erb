@@ -14,10 +14,10 @@
             <div class="sidebar-wrapper">
                 <ul class="nav">
                     <li class="nav-item ">
-                        <a class="nav-link" href="../examples/dashboard.html">
-                            <i class="material-icons">shopping_cart</i>
-                            <p>Shops</p>
-                        </a>
+                      <%= link_to user_shops_path(current_user.id), class: "nav-link" do %>
+                        <i class="material-icons">shopping_cart</i>
+                        <p>Shops</p>
+                      <% end %>
                     </li>
                     <li class="nav-item active">
                       <%= link_to shippers_path, class: "nav-link" do %>
@@ -116,6 +116,8 @@
                                                 <th>
                                                     Email
                                                 </th>
+                                                <th>
+                                                </th>
                                             </thead>
                                             <tbody>
                                               <% @shippers.each do |shipper| %>
@@ -123,6 +125,7 @@
                                                   <td><%= shipper.id %></td>
                                                   <td><%= shipper.first_name + shipper.second_name %></td>
                                                   <td><%= shipper.email %></td>
+                                                  <td><%= link_to "Delete", shipper_path(shipper), method: :delete %></td>
                                                 </tr>
                                               <% end %>
                                             </tbody>
