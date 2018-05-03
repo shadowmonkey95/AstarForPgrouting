@@ -33,6 +33,10 @@ Rails.application.routes.draw do
   resources :paths
   resources :activities
 
+  resources :anothers do
+    get :get_shop
+  end
+
   get 'ways/find_path' => 'ways#find_path', as: :find_path
   root 'shops#index'
   mount ActionCable.server => '/cable'
