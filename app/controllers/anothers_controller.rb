@@ -18,4 +18,21 @@ class AnothersController < ApplicationController
     end
   end
 
+  def get_invoices
+    invoice_ids = params[:invoice_ids].split(', ')
+    invoices = Invoice.where(:id => invoice_ids)
+    if invoices
+      render json: {
+          message: 'success',
+          data: {
+              invoice_ids: invoices
+          }
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+  end
+
 end
