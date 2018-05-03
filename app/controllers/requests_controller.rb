@@ -12,7 +12,7 @@ class RequestsController < ApplicationController
   load_and_authorize_resource :request, :through => :shop
 
   def index
-    @requests = Request.where({ :shop_id => params[:shop_id]}).all
+    @requests = Request.where({ :shop_id => params[:shop_id]}).page(params[:page]).per(8)
   end
 
   def show
@@ -25,6 +25,7 @@ class RequestsController < ApplicationController
 
   def create
     @request = @shop.requests.build(request_params)
+    @request.status = "Pending"
     if @request.save
       MatchingClass.match(@request.id)
       redirect_to user_shop_requests_path(@shop)
@@ -54,8 +55,7 @@ class RequestsController < ApplicationController
 
   private
   def request_params
-    defaults = { status: 'Pending' }
-    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve, :deposit).reverse_merge(defaults)
+    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve, :deposit)
   end
 
   def invoice_notification

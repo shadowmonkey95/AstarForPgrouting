@@ -20,7 +20,9 @@ gem 'ransack', '~> 1.8', '>= 1.8.8'
 gem 'bootstrap-datepicker-rails', '~> 1.8', '>= 1.8.0.1'
 gem 'bootstrap-timepicker-rails', '~> 0.1.3'
 gem 'public_activity', '~> 1.5'
-gem 'will_paginate', '~> 3.1', '>= 3.1.6'
+# gem 'will_paginate', '~> 3.1', '>= 3.1.6'
+gem 'kaminari', '~> 1.1', '>= 1.1.1'
+gem 'activeadmin', '~> 1.3'
 gem 'bootstrap_form', '~> 2.7'
 gem 'octicons_helper', '~> 4.2'
 gem 'devise', '~> 4.4', '>= 4.4.1'
@@ -78,4 +80,4 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'fcm', '~> 0.0.2'
-gem 'will_paginate-bootstrap4', '~> 0.2.2'
+# gem 'will_paginate-bootstrap4', '~> 0.2.2'
