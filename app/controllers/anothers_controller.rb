@@ -22,27 +22,23 @@ class AnothersController < ApplicationController
     invoice_ids = params[:invoice_ids].split(', ')
     invoices = Invoice.where(:id => invoice_ids)
     if invoices
-      shop_ids = []
+      shops = []
       invoices.each do |invoice|
-        shop_ids << invoice.shop_id
+        shop = Shop.find(invoice.shop_id)
+        if shop
+          shops << shop
+        end
       end
-      shops = Shop.where(:id => shop_ids)
-      if shops
-        render json: {
-            message: 'success',
-            data: {
-                invoices: invoices,
-                shops: shops
-            }
-        }, status: :ok
-      else
-        render json: {
-            message: 'error with shop',
-        }, status: :ok
-      end
+      render json: {
+          message: 'success',
+          data: {
+              invoices: invoices,
+              shops: shops
+          }
+      }, status: :ok
     else
       render json: {
-          message: 'error with shipper',
+          message: 'error',
       }, status: :ok
     end
   end
