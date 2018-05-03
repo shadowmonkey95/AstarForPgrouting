@@ -35,4 +35,18 @@ class AnothersController < ApplicationController
     end
   end
 
+  def set_invoice
+    pars = params.require(:invoice).permit(:shop_id, :shipper_id, :distance, :distance2, :shipping_cost, :deposit, :user_id)
+    invoice = Invoice.new(pars)
+    if invoice.save
+      render json: {
+          message: 'success',
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+  end
+
 end
