@@ -42,7 +42,6 @@ class ShippersController < ApplicationController
           }
       }, status: :ok
     end
-
   end
 
   def login

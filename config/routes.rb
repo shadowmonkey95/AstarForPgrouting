@@ -35,6 +35,13 @@ Rails.application.routes.draw do
   resources :paths
   resources :activities
 
+  resources :anothers do
+    get :get_shop
+    get :get_invoices
+    post :set_invoice
+    post :set_shipper_status
+  end
+
   get 'ways/find_path' => 'ways#find_path', as: :find_path
   root 'shops#index'
   mount ActionCable.server => '/cable'

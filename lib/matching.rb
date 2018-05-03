@@ -9,7 +9,7 @@ module Matching
     require 'algorithm/hungarian.rb'
     include Astar
 
-    def self.match(request_id)
+    def self.match(request_id, invoice_id)
 
       # point_id = ['2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657']
       # ways = []
@@ -34,33 +34,12 @@ module Matching
 
 
       # request_id = 19
-      request = Request.find_by_id(request_id)
-      deposit = request.deposit
-
-      shop_id = request.shop_id
-      shop = Shop.find_by_id(shop_id)
-      shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
-
-      locations = findShipperArea(shop)
-      distance = []
-      locations.each do |location|
-        s = []
-        s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
-        s << location.shipper_id
-        distance << s
-      end
-      distance = distance.sort_by{ |d| [d[0], d[1]] }
-      shipper_id = distance.first[1]
-
-      location = Location.find_by(shipper_id: shipper_id)
-      location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
-
-      shipper = Shipper.find_by_id(shipper_id)
-      shipping_cost = shippingCost(distance.first[0])
-
-      # SELECT * FROM pgr_astar(
+      # request = Request.find_by_id(request_id)
+      # deposit = request.deposit
       #
-      #     'SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+      # shop_id = request.shop_id
+      # shop = Shop.find_by_id(shop_id)
+      # shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
       #
       #     ARRAY[6364], ARRAY[11736], heuristic :=4 );
       sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
@@ -103,7 +82,7 @@ module Matching
 
       # sendNoti(shipper.req_id, invoice.id)
 
-      # sendNoti('e_X_xBOyKEE:APA91bGM3eKU8tQYaXdSCoFqDiBUtqscxUJCut71vfdSWCB0ZEZfL48f3Qe7-I9uXQoBka-XjwiyorxhG7REVSPUW6w__R4-qaMUYtxqq4hOtCzCKZuyAKISRZYQBUQXEn61zf-g2I7T', 1)
+      sendNoti(request_id, invoice_id)
 
     end
 
