@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     get :get_shop
     get :get_invoices
     post :set_invoice
+    post :set_shipper_status
   end
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path

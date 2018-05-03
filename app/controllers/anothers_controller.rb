@@ -57,4 +57,21 @@ class AnothersController < ApplicationController
     end
   end
 
+  def set_shipper_status
+    id = params[:id]
+    status = params[:status]
+    shipper = Shipper.find_by_id(id)
+    if shipper
+      shipper.status = status
+      shipper.save
+      render json: {
+        message: 'success',
+      }, status: :ok
+    else
+      render json: {
+        message: 'error',
+      }, status: :ok
+    end
+
+  end
 end
