@@ -35,6 +35,7 @@ Rails.application.routes.draw do
 
   resources :anothers do
     get :get_shop
+    get :get_invoices
   end
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
