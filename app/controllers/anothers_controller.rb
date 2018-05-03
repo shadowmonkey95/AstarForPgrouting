@@ -25,7 +25,7 @@ class AnothersController < ApplicationController
       render json: {
           message: 'success',
           data: {
-              invoice_ids: invoices
+              invoices: invoices
           }
       }, status: :ok
     else
