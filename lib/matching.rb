@@ -9,7 +9,7 @@ module Matching
     require 'algorithm/hungarian.rb'
     include Astar
 
-    def self.match(request_id)
+    def self.match(request_id, invoice_id)
 
       # point_id = ['2185', '14514', '3385', '14188', '6048', '14414', '11488', '1720', '4675', '3069', '17700', '11730', '7814', '16060', '640', '10049', '2326', '2621', '17986', '9902', '4221', '7411', '10558', '12526', '18039', '13095', '1651', '10726', '3657']
       # ways = []
@@ -102,7 +102,7 @@ module Matching
 
       # sendNoti(shipper.req_id, invoice.id)
 
-      sendNoti(request_id, 1)
+      sendNoti(request_id, invoice_id)
 
     end
 
