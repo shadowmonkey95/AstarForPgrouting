@@ -41,11 +41,9 @@
           </tbody>
         </table>
         <div class="digg_pagination">
-          <div class="page_info">
-            <%= page_entries_info @shops_admin %>
-          </div>
+
           <div>
-            <%= will_paginate @shops_admin, :container => false %>
+            <%= paginate @shops_admin %>
           </div>
         </div>
         <%= link_to "Add invoice", new_invoice_path %>
@@ -95,11 +93,9 @@
               </tbody>
             </table>
             <div class="digg_pagination">
-              <div class="page_info">
-                <%= page_entries_info @shops %>
-              </div>
+
               <div>
-              <%= will_paginate @shops, :container => false %>
+                <%= paginate @shops %>
               </div>
             </div>
           </div>

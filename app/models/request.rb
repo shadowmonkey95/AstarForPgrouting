@@ -1,4 +1,6 @@
 class Request < ApplicationRecord
+  scope :pending, -> { where(:status => "Pending") }
+  scope :found_shipper, -> { where(:status => "Found shipper") }
   geocoded_by :address do |object, results|
     if results.present?
       object.latitude = results.first.latitude

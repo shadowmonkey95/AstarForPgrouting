@@ -5,9 +5,9 @@ class ShopsController < ApplicationController
   def index
     # @shops = Shop.all.order("created_at ASC")
     # @shops_admin = Shop.all
-    @shops_admin = Shop.order(sort_column + " " + sort_direction).paginate(:per_page => 5, :page => params[:page])
+    @shops_admin = Shop.order(sort_column + " " + sort_direction).page(params[:page]).per(5)
       if user_signed_in?
-      @shops = Shop.where(user_id: current_user.id).paginate(:per_page => 5, :page => params[:page]).order(sort_column + " " + sort_direction)
+      @shops = Shop.where(user_id: current_user.id).order(sort_column + " " + sort_direction).page(params[:page]).per(5)
       @hash = Gmaps4rails.build_markers(@shops) do |shop, marker|
         marker.lat shop.latitude
         marker.lng shop.longitude

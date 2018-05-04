@@ -67,6 +67,7 @@ module Matching
       invoice.deposit = deposit
       invoice.user_id = shop.user_id
       invoice.save
+      request.update_columns(status: "Found shipper")
       if invoice.save
         invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
       end
