@@ -3,7 +3,7 @@
 <%= stylesheet_link_tag '/assets/css/material-dashboard.css?v=2.0.0' %>
 <%= stylesheet_link_tag '/assets/assets-for-demo/demo.css' %>
 
-<body class="">
+<body>
     <div class="wrapper">
         <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
             <div class="logo">
@@ -14,7 +14,7 @@
             <div class="sidebar-wrapper">
                 <ul class="nav">
                     <li class="nav-item ">
-                      <%= link_to user_shops_path(current_user.id), class: "nav-link" do %>
+                      <%= link_to shippers_path, class: "nav-link" do %>
                         <i class="material-icons">shopping_cart</i>
                         <p>Shops</p>
                       <% end %>
@@ -101,11 +101,11 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header card-header-primary">
-                                    <h4 class="card-title ">Shippers</h4>
+                                    <div class="card-title ">Shippers</div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table">
+                                        <table class="table" style="font-size: 12px">
                                             <thead class=" text-primary">
                                                 <th>
                                                     ID
@@ -117,6 +117,9 @@
                                                     Email
                                                 </th>
                                                 <th>
+                                                  Status
+                                                </th>
+                                                <th>
                                                 </th>
                                             </thead>
                                             <tbody>
@@ -125,6 +128,7 @@
                                                   <td><%= shipper.id %></td>
                                                   <td><%= shipper.first_name + shipper.second_name %></td>
                                                   <td><%= shipper.email %></td>
+                                                  <td><%= shipper.status %></td>
                                                   <td><%= link_to "Delete", shipper_path(shipper), method: :delete %></td>
                                                 </tr>
                                               <% end %>
