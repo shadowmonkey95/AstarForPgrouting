@@ -108,7 +108,7 @@ class AnothersController < ApplicationController
     #   render json: {
     #     message: 'success',
     #   }, status: :ok
-    end
+    # end
   end
 
 end
