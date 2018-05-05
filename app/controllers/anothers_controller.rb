@@ -91,6 +91,7 @@ class AnothersController < ApplicationController
       message: 'success',
       data: {
         available: available,
+        shipper_id: shipper_id,
         next_shipper: next_shipper
       }
     }, status: :ok
