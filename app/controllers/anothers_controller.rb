@@ -81,16 +81,16 @@ class AnothersController < ApplicationController
     invoice_id = params[:invoice_id]
     availables = Available.find_by(invoice_id: invoice_id)
     available = availables.shipper_id.split(', ')
-    next_shipper = ""
+    next_shipper = 0
     (0..available.count - 1).each do |i|
       if shipper_id == available[i].to_i
-        next_shipper += available[i + 1]
+        next_shipper = available[i + 1].to_i
       end
     end
     render json: {
       message: 'success',
       data: {
-        available: available[0],
+        available: available,
         shipper_id: shipper_id,
         next_shipper: next_shipper
       }
