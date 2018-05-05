@@ -90,7 +90,8 @@ class AnothersController < ApplicationController
     render json: {
       message: 'success',
       data: {
-        next_shipper: available
+        available: available,
+        next_shipper: next_shipper
       }
     }, status: :ok
     # if next_shipper
