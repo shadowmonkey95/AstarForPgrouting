@@ -77,12 +77,9 @@ class AnothersController < ApplicationController
   end
 
   def cancel_booking
-    shippers = Shipper.all
-    shippers.each do |shipper|
-      path = Path.new
-      path.shipper_id = shipper.id
-      path.save
-    end
+    render json: {
+      message: 'success',
+    }, status: :ok
     # shipper_id = params[:shipper_id]
     # invoice_id = params[:invoice_id]
     # availables = Available.find_by(invoice_id: invoice_id)
@@ -106,12 +103,12 @@ class AnothersController < ApplicationController
     #   invoice.save
     #
     #   # MatchingClass.set_path(invoice.shop_id, next_shipper)
-    #   # sendNoti(shipper.req_id, invoice.id)
+    #   sendNoti(shipper.req_id, invoice.id)
     #
     #   render json: {
     #     message: 'success',
     #   }, status: :ok
-    # end
+    end
   end
 
 end
