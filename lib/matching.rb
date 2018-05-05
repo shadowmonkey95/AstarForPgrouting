@@ -30,57 +30,57 @@ module Matching
         distance = distance.sort_by{ |d| [d[0], d[1]] }
         shipper_id = distance.first[1]
 
-        location = Location.find_by(shipper_id: shipper_id)
-        location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
-
-        shipper = Shipper.find_by_id(shipper_id)
-        shipping_cost = shippingCost(distance.first[0])
-
-        sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
-              ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4 )"
-        result = ActiveRecord::Base.connection.execute(sql)
-
-        node_result = Array.new
-        result.each do |result|
-          node_result << result['node']
-        end
-
-        path_result = Array.new
-        node_result.each do |node|
-          tmp = Array.new
-          tmp << Vertice.find(node).lat.to_s
-          tmp << Vertice.find(node).lon.to_s
-          path_result << tmp
-        end
-
-        path = Path.new
-        path.shipper_id = shipper_id
-        path.path = path_result
-        path.save
-
-        invoice = Invoice.new
-        invoice.shop_id = 17
-        invoice.shipper_id = shipper_id
-        invoice.distance = distance.first[0]
-        invoice.distance2 = distance.first[0]
-        invoice.shipping_cost = shipping_cost
-        invoice.deposit = 500000
-        invoice.user_id = shop.user_id
-        invoice.save
-        request.update_columns(status: "Found shipper")
-        if invoice.save
-          invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-        end
+        # location = Location.find_by(shipper_id: shipper_id)
+        # location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
+        #
+        # shipper = Shipper.find_by_id(shipper_id)
+        # shipping_cost = shippingCost(distance.first[0])
+        #
+        # sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+        #       ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4 )"
+        # result = ActiveRecord::Base.connection.execute(sql)
+        #
+        # node_result = Array.new
+        # result.each do |result|
+        #   node_result << result['node']
+        # end
+        #
+        # path_result = Array.new
+        # node_result.each do |node|
+        #   tmp = Array.new
+        #   tmp << Vertice.find(node).lat.to_s
+        #   tmp << Vertice.find(node).lon.to_s
+        #   path_result << tmp
+        # end
+        #
+        # path = Path.new
+        # path.shipper_id = shipper_id
+        # path.path = path_result
+        # path.save
+        #
+        # invoice = Invoice.new
+        # invoice.shop_id = 17
+        # invoice.shipper_id = shipper_id
+        # invoice.distance = distance.first[0]
+        # invoice.distance2 = distance.first[0]
+        # invoice.shipping_cost = shipping_cost
+        # invoice.deposit = 500000
+        # invoice.user_id = shop.user_id
+        # invoice.save
+        # request.update_columns(status: "Found shipper")
+        # if invoice.save
+        #   invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+        # end
 
         (0..distance.count - 1).each do |i|
           shipper_ids += distance[i][1].to_s + ", "
         end
         available_shippers = Available.new
-        available_shippers.invoice_id = invoice.id
+        available_shippers.invoice_id = 20
         available_shippers.shipper_id = shipper_ids
         available_shippers.save
 
-        sendNoti(shipper.req_id, invoice.id)
+        # sendNoti(shipper.req_id, invoice.id)
         # sendNoti(request_id, invoice_id)
       end
     end
