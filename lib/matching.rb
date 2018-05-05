@@ -10,11 +10,11 @@ module Matching
     include Astar
 
     def self.match(request_id)
-      request = Request.find_by_id(request_id)
-      deposit = request.deposit
+      # request = Request.find_by_id(request_id)
+      # deposit = request.deposit
 
       shop_id = request.shop_id
-      shop = Shop.find_by_id(shop_id)
+      shop = Shop.find_by_id(17)
       shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
 
       locations = findShipperArea(shop)
