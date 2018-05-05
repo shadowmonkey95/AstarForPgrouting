@@ -87,28 +87,34 @@ class AnothersController < ApplicationController
         next_shipper = available[i + 1]
       end
     end
-    if next_shipper
-      # shipper = Shipper.find(next_shipper)
-      # invoice = Invoice.find_by_id(invoice_id)
-      # shop = Shop.find_by_id(invoice.shop_id)
-      # location = Location.find_by(shipper_id: next_shipper)
-      # distance = Haversine.distance(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f).to_m
-      # invoice.shipper_id = next_shipper
-      # invoice.distance = distance
-      # invoice.distance2 = distance
-      # invoice.shipping_cost = MatchingClass.shippingCost(distance)
-      # invoice.save
-      #
-      # # MatchingClass.set_path(invoice.shop_id, next_shipper)
-      # sendNoti(shipper.req_id, invoice.id)
-
-      render json: {
-        message: 'success',
-        data: {
-          next_shipper: next_shipper
-        }
-      }, status: :ok
-    end
+    render json: {
+      message: 'success',
+      data: {
+        next_shipper: next_shipper
+      }
+    }, status: :ok
+    # if next_shipper
+    #   # shipper = Shipper.find(next_shipper)
+    #   # invoice = Invoice.find_by_id(invoice_id)
+    #   # shop = Shop.find_by_id(invoice.shop_id)
+    #   # location = Location.find_by(shipper_id: next_shipper)
+    #   # distance = Haversine.distance(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f).to_m
+    #   # invoice.shipper_id = next_shipper
+    #   # invoice.distance = distance
+    #   # invoice.distance2 = distance
+    #   # invoice.shipping_cost = MatchingClass.shippingCost(distance)
+    #   # invoice.save
+    #   #
+    #   # # MatchingClass.set_path(invoice.shop_id, next_shipper)
+    #   # sendNoti(shipper.req_id, invoice.id)
+    #
+    #   render json: {
+    #     message: 'success',
+    #     data: {
+    #       next_shipper: next_shipper
+    #     }
+    #   }, status: :ok
+    # end
   end
 
 end
