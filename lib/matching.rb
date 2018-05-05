@@ -13,7 +13,7 @@ module Matching
       # request = Request.find_by_id(request_id)
       # deposit = request.deposit
 
-      shop_id = request.shop_id
+      # shop_id = request.shop_id
       shop = Shop.find_by_id(17)
       shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
 
