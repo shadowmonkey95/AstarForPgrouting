@@ -1,5 +1,7 @@
 class AnothersController < ApplicationController
 
+  include Matching
+
   skip_before_action :verify_authenticity_token
 
   def get_shop
@@ -75,15 +77,41 @@ class AnothersController < ApplicationController
   end
 
   def cancel_booking
-    shipper_id = params[:shipper_id]
-    invoice_id = params[:invoice_id]
-    render json: {
-      message: 'success',
-      data: {
-        shipper_id: shipper_id,
-        invoices_id: invoice_id
-      }
-    }, status: :ok
+    shippers = Shipper.all
+    shippers.each do |shipper|
+      path = Path.new
+      path.shipper_id = shipper.id
+      path.save
+    end
+    # shipper_id = params[:shipper_id]
+    # invoice_id = params[:invoice_id]
+    # availables = Available.find_by(invoice_id: invoice_id)
+    # available = availables.shipper_id.split(', ')
+    # next_shipper = 0
+    # (0..available.count - 1).each do |i|
+    #   if shipper_id == available[i].to_i
+    #     next_shipper = available[i + 1]
+    #   end
+    # end
+    # if next_shipper
+    #   shipper = Shipper.find(next_shipper)
+    #   invoice = Invoice.find_by_id(invoice_id)
+    #   shop = Shop.find_by_id(invoice.shop_id)
+    #   location = Location.find_by(shipper_id: next_shipper)
+    #   distance = Haversine.distance(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f).to_m
+    #   invoice.shipper_id = next_shipper
+    #   invoice.distance = distance
+    #   invoice.distance2 = distance
+    #   invoice.shipping_cost = MatchingClass.shippingCost(distance)
+    #   invoice.save
+    #
+    #   # MatchingClass.set_path(invoice.shop_id, next_shipper)
+    #   # sendNoti(shipper.req_id, invoice.id)
+    #
+    #   render json: {
+    #     message: 'success',
+    #   }, status: :ok
+    # end
   end
 
 end
