@@ -10,45 +10,45 @@ module Matching
     include Astar
 
     def self.match(request_id)
-      # request = Request.find_by_id(request_id)
-      # deposit = request.deposit
-      #
-      # shop_id = request.shop_id
-      # shop = Shop.find_by_id(shop_id)
-      #
-      # locations = findShipperArea(shop)
-      # distance = []
-      # if locations
-      #   locations.each do |location|
-      #     s = []
-      #     s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
-      #     s << location.shipper_id
-      #     distance << s
-      #   end
-      #   distance = distance.sort_by{ |d| [d[0], d[1]] }
-      #   shipper_id = distance.first[1]
-      #
-      #   shipper = Shipper.find_by_id(shipper_id)
-      #   shipping_cost = shippingCost(distance.first[0])
-      #
-      #   invoice = Invoice.new
-      #   invoice.shop_id = shop_id
-      #   invoice.shipper_id = shipper_id
-      #   invoice.distance = distance.first[0]
-      #   invoice.distance2 = distance.first[0]
-      #   invoice.shipping_cost = shipping_cost
-      #   invoice.deposit = 500000
-      #   invoice.user_id = shop.user_id
-      #   invoice.save
-      #   request.update_columns(status: "Found shipper")
-      #   if invoice.save
-      #     invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-      #   end
-      #
-      #   set_available_shippers(distance)
-      #   set_path(shop_id, shipper_id)
-      #   sendNoti(shipper.req_id, invoice.id)
-      # end
+      request = Request.find_by_id(request_id)
+      deposit = request.deposit
+
+      shop_id = request.shop_id
+      shop = Shop.find_by_id(shop_id)
+
+      locations = findShipperArea(shop)
+      distance = []
+      if locations
+        locations.each do |location|
+          s = []
+          s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
+          s << location.shipper_id
+          distance << s
+        end
+        distance = distance.sort_by{ |d| [d[0], d[1]] }
+        shipper_id = distance.first[1]
+
+        shipper = Shipper.find_by_id(shipper_id)
+        shipping_cost = shippingCost(distance.first[0])
+
+        invoice = Invoice.new
+        invoice.shop_id = shop_id
+        invoice.shipper_id = shipper_id
+        invoice.distance = distance.first[0]
+        invoice.distance2 = distance.first[0]
+        invoice.shipping_cost = shipping_cost
+        invoice.deposit = 500000
+        invoice.user_id = shop.user_id
+        invoice.save
+        request.update_columns(status: "Found shipper")
+        if invoice.save
+          invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+        end
+
+        set_available_shippers(distance)
+        set_path(shop_id, shipper_id)
+        sendNoti(shipper.req_id, invoice.id)
+      end
       sendNoti("eTc0XTkIhGI:APA91bFoWfcC-ZS49o6zc00yU0V_Ivyn-HH5ZXTMy6tehKykd9MgjEnT3zoKtTo7ZSfX8vlRIRiIUL3RFLyT345diRL_b5lw6lSsV1bpAyLsYVR_vABLD0w0uEhzST1XxwZcs2Bv-Flo", 20)
       sendNoti("dKGI515zing:APA91bEAPx0QRdMv0r4aFoeUn4Ra-a7vLwTa3SAWM9eEX4hWHwH0huauDwtaBB1-mSkOQ2_pIgMBNAQBWrm4e9XuTUaHz7B1Icut0I5yNHlrWY9VQiMXNWpBSuYRw5L0TpHA6XcZG8eL", 1)
     end
