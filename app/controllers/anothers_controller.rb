@@ -72,6 +72,18 @@ class AnothersController < ApplicationController
         message: 'error',
       }, status: :ok
     end
-
   end
+
+  def cancel_booking
+    shipper_id = params[:shipper_id]
+    invoice_id = params[:invoice_id]
+    render json: {
+      message: 'success',
+      data: {
+        shipper_id: shipper_id,
+        invoices_id: invoice_id
+      }
+    }, status: :ok
+  end
+
 end
