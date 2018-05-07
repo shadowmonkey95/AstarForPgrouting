@@ -79,13 +79,13 @@ class AnothersController < ApplicationController
   def cancel_booking
     invoice_id = params[:invoice_id]
     index = params[:index]
-    # availables = Available.find_by(invoice_id: invoice_id)
-    # available = availables.shipper_id.split(', ')
-    # next_shipper = available[index + 1]
+    availables = Available.find_by(invoice_id: invoice_id)
+    available = availables.shipper_id.split(', ')
+    next_shipper = available[index + 1]
     render json: {
       message: 'success',
       data: {
-        next_shipper: invoice_id
+        next_shipper: available
       }
     }, status: :ok
     # if next_shipper
