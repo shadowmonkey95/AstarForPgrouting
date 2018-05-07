@@ -77,46 +77,33 @@ class AnothersController < ApplicationController
   end
 
   def cancel_booking
-    shipper_id = params[:shipper_id]
     invoice_id = params[:invoice_id]
+    index = params[:index]
     availables = Available.find_by(invoice_id: invoice_id)
     available = availables.shipper_id.split(', ')
-    # next_shipper = 0
-    # (0...available.count).each do |i|
-    #   if shipper_id == available[i].to_i
-    #     next_shipper = available[i + 1].to_i
-    #   end
-    # end
-    render json: {
-      message: 'success',
-      data: {
-        available: available[1],
-        # shipper_id: shipper_id,
-        # next_shipper: next_shipper
-      }
-    }, status: :ok
-    # if next_shipper
-    #   # shipper = Shipper.find(next_shipper)
-    #   # invoice = Invoice.find_by_id(invoice_id)
-    #   # shop = Shop.find_by_id(invoice.shop_id)
-    #   # location = Location.find_by(shipper_id: next_shipper)
-    #   # distance = Haversine.distance(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f).to_m
-    #   # invoice.shipper_id = next_shipper
-    #   # invoice.distance = distance
-    #   # invoice.distance2 = distance
-    #   # invoice.shipping_cost = MatchingClass.shippingCost(distance)
-    #   # invoice.save
-    #   #
-    #   # # MatchingClass.set_path(invoice.shop_id, next_shipper)
-    #   # sendNoti(shipper.req_id, invoice.id)
-    #
-    #   render json: {
-    #     message: 'success',
-    #     data: {
-    #       next_shipper: next_shipper
-    #     }
-    #   }, status: :ok
-    # end
+    next_shipper = available[index + 1]
+    if next_shipper
+      shipper = Shipper.find(next_shipper)
+      invoice = Invoice.find_by_id(invoice_id)
+      shop = Shop.find_by_id(invoice.shop_id)
+      location = Location.find_by(shipper_id: next_shipper)
+      distance = Haversine.distance(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f).to_m
+      invoice.shipper_id = next_shipper
+      invoice.distance = distance
+      invoice.distance2 = distance
+      invoice.shipping_cost = MatchingClass.shippingCost(distance)
+      invoice.save
+
+      # MatchingClass.set_path(invoice.shop_id, next_shipper)
+      MatchingClass.sendNoti(shipper.req_id, invoice.id, index + 1)
+
+      render json: {
+        message: 'success',
+        data: {
+          next_shipper: next_shipper
+        }
+      }, status: :ok
+    end
   end
 
 end
