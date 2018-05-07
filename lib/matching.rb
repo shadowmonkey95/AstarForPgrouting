@@ -167,7 +167,7 @@ module Matching
         available_shippers = Available.new
         available_shippers.invoice_id = 20
         available_shippers.shipper_id = shipper_ids
-        available_shippers.index = 0
+        # available_shippers.index = 0
         available_shippers.save
       end
 
