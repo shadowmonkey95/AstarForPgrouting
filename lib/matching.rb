@@ -146,7 +146,7 @@ module Matching
                 order by the_geom <-> st_setsrid(st_makepoint(#{lon}, #{lat}),4326)
                 limit 1
               "
-        nearest_point = ActiveRecord::Base.connection.execute(sql)
+        # nearest_point = ActiveRecord::Base.connection.execute(sql)
         nearest_point[0]['id']
       end
 
@@ -167,7 +167,7 @@ module Matching
         available_shippers = Available.new
         available_shippers.invoice_id = 20
         available_shippers.shipper_id = shipper_ids
-        # available_shippers.index = 0
+        available_shippers.index = 0
         available_shippers.save
       end
 
