@@ -82,7 +82,7 @@ class AnothersController < ApplicationController
     availables = Available.find_by(invoice_id: invoice_id)
     available = availables.shipper_id.split(', ')
     next_shipper = 0
-    (0..available.count - 1).each do |i|
+    (0...available.count).each do |i|
       if shipper_id == available[i].to_i
         next_shipper = available[i + 1]
       end

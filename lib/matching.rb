@@ -39,15 +39,17 @@ module Matching
         invoice.shipping_cost = shipping_cost
         invoice.deposit = 500000
         invoice.user_id = shop.user_id
+        invoice.request_id = request.id
         invoice.save
         request.update_columns(status: "Found shipper")
-        if invoice.save
-          invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-        end
+        request.update_columns(shipper_id: shipper_id)
+        # if invoice.save
+        #   invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+        # end
 
         set_available_shippers(distance)
         set_path(shop_id, shipper_id)
-        sendNoti(shipper.req_id, invoice.id)
+        # sendNoti(shipper.req_id, invoice.id)
       end
     end
 
@@ -101,9 +103,9 @@ module Matching
           locations = Location.where('latitude < ?', latitude_max.to_s).where('latitude > ?', latitude_min.to_s).where('longtitude < ?', longitude_max.to_s).where('longtitude > ?', longitude_min.to_s)
           if locations.count > 0
             locations.each do |location|
-              if location.shipper.status == "available"
+              # if location.shipper.status == "available"
                 available_locations << location
-              end
+              # end
             end
             if available_locations.count > 0
               flag = 1
@@ -141,7 +143,7 @@ module Matching
         result
       end
 
-      def set_available_shippers(distance)
+      def self.set_available_shippers(distance)
         shipper_ids = ""
         (0..distance.count - 1).each do |i|
           shipper_ids += distance[i][1].to_s + ", "
