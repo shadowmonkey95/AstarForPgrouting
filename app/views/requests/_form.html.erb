@@ -19,3 +19,18 @@
     <%= r.button :submit, class: "btn btn-outline-primary" %>
 <% end %>
 
+<input type="radio" name="bedStatus" id="allot" checked="checked" value="allot">Allot
+<input type="radio" name="bedStatus" id="transfer" value="transfer">Transfer
+
+<script>
+    $(document).ready(function () {
+        $('input:radio[name=bedStatus]:checked').change(function () {
+            if ($("input[name='bedStatus']:checked").val() == 'allot') {
+                alert("Allot Thai Gayo Bhai");
+            }
+            if ($("input[name='bedStatus']:checked").val() == 'transfer') {
+                alert("Transfer Thai Gayo");
+            }
+        });
+    });
+</script>

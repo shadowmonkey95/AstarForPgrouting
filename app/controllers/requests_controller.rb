@@ -27,7 +27,7 @@ class RequestsController < ApplicationController
     @request = @shop.requests.build(request_params)
     @request.status = "Pending"
     if @request.save
-      MatchingClass.match(@request.id)
+      # MatchingClass.match(@request.id)
       redirect_to user_shop_requests_path(@shop)
     else
       render 'new'
