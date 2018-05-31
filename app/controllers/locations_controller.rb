@@ -43,13 +43,13 @@ class LocationsController < ApplicationController
       location.timestamp = pars['timestamp']
       location.save
       render json: {
-          message: 'success',
+          message: 'success1',
       }, status: :ok
     else
       location = Location.new(pars)
-      location.save
+      location.save!
       render json: {
-          message: 'success',
+          message: 'success2',
       }, status: :ok
     end
   end

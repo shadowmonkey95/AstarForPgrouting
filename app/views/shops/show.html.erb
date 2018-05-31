@@ -1,1 +1,27 @@
-<%= @shop.name %>
+<h1 align="center"> Shop's Information</h1>
+<div class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <span><b>Name: </b></span><%= @shop.name %><br>
+        <span><b>Address: </b></span><%= @shop.address %><br>
+        <span><b>Longitude: </b></span><%= @shop.longitude %><br>
+        <span><b>Latitude: </b></span><%= @shop.latitude %><br>
+        <%= button_to "Request", user_shop_requests_path(current_user.id, @shop.id), class: "btn btn-outline-dark", type: "button", form: {style: 'display:inline-block;'}, :method => :get%>
+
+      </div>
+      <div class="col">
+        <div id="map" style='width: 100%; height: 90%;'></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    handler = Gmaps.build('Google');
+    handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+        markers = handler.addMarkers(<%=raw @hash.to_json %>);
+        handler.bounds.extendWith(markers);
+        handler.fitMapToBounds();
+    });
+</script>

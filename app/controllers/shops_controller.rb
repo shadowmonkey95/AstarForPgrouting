@@ -18,6 +18,11 @@ class ShopsController < ApplicationController
 
   def show
     @shop = Shop.find(params[:id])
+    @hash = Gmaps4rails.build_markers(@shop) do |shop, marker|
+      marker.lat shop.latitude
+      marker.lng shop.longitude
+      marker.infowindow "Name: #{shop.name} </br> Address: #{shop.address} "
+    end
   end
 
   def new
@@ -45,8 +50,16 @@ class ShopsController < ApplicationController
 
   def destroy
     @shop = Shop.find(params[:id])
-    @shop.destroy
-    redirect_to root_path
+    @requests = Request.where(["shop_id = ? and status = ?", @shop.id, "Pending"])
+    if @requests.empty?
+      @shop.destroy
+      redirect_to root_path
+    else
+      flash.alert = "Cannot delete"
+      redirect_to root_path
+    end
+    # @shop.destroy
+    # redirect_to root_path
   end
 
   private

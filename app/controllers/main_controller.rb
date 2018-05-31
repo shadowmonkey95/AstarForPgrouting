@@ -16,6 +16,7 @@ class MainController < ApplicationController
   # end
 
   def search
+    @invoices = Invoice.where(:user_id => current_user.id, read_at: nil).reverse
     if current_user.has_role? :admin
       @shops = Shop.ransack(name_cont: params[:q]).result(distinct: true)
       @requests = Request.ransack(name_cont: params[:q]).result(distinct: true)
