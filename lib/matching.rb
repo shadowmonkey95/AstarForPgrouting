@@ -74,15 +74,27 @@ module Matching
     end
 
     def self.matching_now
-      # queue = [21, 20, 19, 18, 17, 16, 15]
-      # Thread.new do
-      #   while true do
-          # while queue.count != 0
-            # shop = Shop.find_by_id(queue.last)
-            shop = Shop.find_by_id(21)
+      Thread.new do
+        while true do
+          queue = []
+          new_queue = []
+          File.open("requests.txt",'r') do |fileb|
+            while line = fileb.gets
+              queue << line
+            end
+          end
+          while queue.count != 0
+            new_queue.clear
+            File.open("requests.txt",'r') do |fileb|
+              while line = fileb.gets
+                new_queue << line
+              end
+            end
+            request = Request.find_by_id(queue.first.to_i)
+            shop = Shop.find_by_id(request.shop_id)
             locations = findShipperArea(shop)
             distance = []
-            if locations
+            if locations.count != 0
               locations.each do |location|
                 s = []
                 s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
@@ -90,16 +102,40 @@ module Matching
                 distance << s
               end
               distance = distance.sort_by{ |d| [d[0], d[1]] }
-              # sendNoti(Shipper.find_by_id(distance.first[1]).req_id, requests[m[0]].id, 0)
-              # set_available_shippers(distance, request_id)
-            # else
-              # queue.delete_at(queue.count - 1)
+              # sendNoti(Shipper.find_by_id(distance.first[1]).req_id, request.id, 0)
+              File.open("shipper.txt",'w') do |filea|
+                filea.puts "#{request.id}, #{distance.first[1]}"
+              end
+              set_available_shippers(distance, request.id)
+              queue.delete_at(0)
+              new_queue.delete_at(0)
+            else
+              flag = queue.first
+              queue.delete_at(0)
+              new_queue.delete_at(0)
+              queue << flag
+              new_queue << flag
             end
-            distance
-          # end
-      #     sleep 300
-      #   end
-      # end
+
+            difference = []
+            difference = new_queue - queue
+            if difference.empty? != true
+              difference.each do |d|
+                queue << d
+              end
+            end
+            difference.clear
+
+            File.open("requests.txt",'w') do |filea|
+              queue.each do |q|
+                filea.puts q
+              end
+            end
+
+          end
+          sleep 3
+        end
+      end
 
       # request_id = 23
 
@@ -253,7 +289,8 @@ module Matching
         result
       end
 
-      def set_available_shippers(distance, request_id)
+      def self.set_available_shippers(distance, request_id)
+        p 3
         shipper_ids = ""
         (0..distance.count - 1).each do |i|
           shipper_ids += distance[i][1].to_s + ", "

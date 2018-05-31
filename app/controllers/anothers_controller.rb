@@ -125,9 +125,9 @@ class AnothersController < ApplicationController
   end
 
   def cancel_booking
-    invoice_id = params[:invoice_id]
+    request_id = params[:request_id]
     index = params[:index]
-    availables = Available.find_by(invoice_id: invoice_id)
+    availables = Available.find_by(invoice_id: request_id)
     available = availables.shipper_id.split(', ')
     next_index = index.to_i + 1
     next_shipper = available[next_index]
@@ -151,6 +151,9 @@ class AnothersController < ApplicationController
         }
       }, status: :ok
     else
+      File.open("requests.txt",'a+') do |filea|
+        filea.puts request_id
+      end
     end
   end
 
