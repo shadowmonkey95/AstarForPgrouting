@@ -10,6 +10,7 @@ module Matching
     include Astar
 
     def self.match(request_id)
+<<<<<<< HEAD
       request = Request.find_by_id(request_id)
       deposit = request.deposit
 
@@ -51,6 +52,50 @@ module Matching
         set_path(shop_id, shipper_id)
         # sendNoti(shipper.req_id, invoice.id)
       end
+=======
+      # request = Request.find_by_id(request_id)
+      # deposit = request.deposit
+      #
+      # shop_id = request.shop_id
+      # shop = Shop.find_by_id(shop_id)
+      #
+      # locations = findShipperArea(shop)
+      # distance = []
+      # if locations
+      #   locations.each do |location|
+      #     s = []
+      #     s << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
+      #     s << location.shipper_id
+      #     distance << s
+      #   end
+      #   distance = distance.sort_by{ |d| [d[0], d[1]] }
+      #   shipper_id = distance.first[1]
+      #
+      #   shipper = Shipper.find_by_id(shipper_id)
+      #   shipping_cost = shippingCost(distance.first[0])
+      #
+      #   invoice = Invoice.new
+      #   invoice.shop_id = shop_id
+      #   invoice.shipper_id = shipper_id
+      #   invoice.distance = distance.first[0]
+      #   invoice.distance2 = distance.first[0]
+      #   invoice.shipping_cost = shipping_cost
+      #   invoice.deposit = 500000
+      #   invoice.user_id = shop.user_id
+      #   invoice.save
+      #   request.update_columns(status: "Found shipper")
+      #   if invoice.save
+      #     invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+      #   end
+      #
+      #   set_available_shippers(distance)
+      #   set_path(shop_id, shipper_id)
+      #   sendNoti(shipper.req_id, invoice.id)
+      # end
+      sendNoti("e_X_xBOyKEE:APA91bGM3eKU8tQYaXdSCoFqDiBUtqscxUJCut71vfdSWCB0ZEZfL48f3Qe7-I9uXQoBka-XjwiyorxhG7REVSPUW6w__R4-qaMUYtxqq4hOtCzCKZuyAKISRZYQBUQXEn61zf-g2I7T", 20, 0)
+
+      # sendNoti("dKGI515zing:APA91bEAPx0QRdMv0r4aFoeUn4Ra-a7vLwTa3SAWM9eEX4hWHwH0huauDwtaBB1-mSkOQ2_pIgMBNAQBWrm4e9XuTUaHz7B1Icut0I5yNHlrWY9VQiMXNWpBSuYRw5L0TpHA6XcZG8eL", 1)
+>>>>>>> da4edc3529cafc61dd356405a3a23404bc4359b0
     end
 
     def self.set_path(shop_id, shipper_id)
@@ -86,7 +131,22 @@ module Matching
     def self.shippingCost(distance)
       distance
     end
-    
+
+    def self.sendNoti(req_id, invoice_id, index)
+      fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
+      registration_ids = [req_id]
+      options = {
+          data: {
+              data: {
+                  invoice_id: invoice_id,
+                  index: index
+              }
+          }
+
+      }
+      fcm.send(registration_ids, options)
+    end
+
     private
 
       def self.findShipperArea(shop)
@@ -130,7 +190,7 @@ module Matching
                 order by the_geom <-> st_setsrid(st_makepoint(#{lon}, #{lat}),4326)
                 limit 1
               "
-        nearest_point = ActiveRecord::Base.connection.execute(sql)
+        # nearest_point = ActiveRecord::Base.connection.execute(sql)
         nearest_point[0]['id']
       end
 
@@ -151,21 +211,8 @@ module Matching
         available_shippers = Available.new
         available_shippers.invoice_id = 20
         available_shippers.shipper_id = shipper_ids
+        available_shippers.index = 0
         available_shippers.save
-      end
-
-      def self.sendNoti(req_id, invoice_id)
-        fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
-        registration_ids = [req_id]
-        options = {
-            data: {
-                data: {
-                    invoice_id: invoice_id
-                }
-            }
-
-        }
-        fcm.send(registration_ids, options)
       end
 
   end
