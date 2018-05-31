@@ -6,18 +6,42 @@ class LocationsController < ApplicationController
     @locations = Location.order('shipper_id ASC').paginate(:page => params[:page], :per_page => 10)
   end
 
+  def create
+    location_params = params.require(:location).permit(:shipper_id, :latitude, :longtitude, :timestamp)
+    location = Location.new(location_params)
+    if location.save
+      render json: {
+          message: 'success',
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+  end
+
+  def update
+    location_params = params.require(:location).permit(:shipper_id, :latitude, :longtitude, :timestamp)
+    location = Location.find_by(shipper_id: location_params['shipper_id'])
+    if location.update(location_params)
+      render json: {
+          message: 'success',
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+  end
+
   def setLocation
     pars = params.require(:location).permit(:shipper_id, :latitude, :longtitude, :timestamp)
-    shipper_id = pars['shipper_id']
-    latitude = pars['latitude']
-    longitude = pars['longtitude']
-    timestamp = pars['timestamp']
-    location = Location.find_by(shipper_id: shipper_id)
+    location = Location.find_by(shipper_id: pars['shipper_id'])
     if location
-      location.latitude = latitude
-      location.longtitude = longitude
-      location.timestamp = timestamp
-      location.save!
+      location.latitude = pars['latitude']
+      location.longtitude = pars['longtitude']
+      location.timestamp = pars['timestamp']
+      location.save
       render json: {
           message: 'success1',
       }, status: :ok
@@ -28,7 +52,6 @@ class LocationsController < ApplicationController
           message: 'success2',
       }, status: :ok
     end
-
   end
 
 end

@@ -13,7 +13,7 @@ class ShippersController < ApplicationController
   end
 
   def register
-    pars = params.require(:shipper).permit(:first_name, :second_name, :email, :password, :req_id)
+    pars = params.require(:shipper).permit(:first_name, :second_name, :email, :password, :req_id, :status)
     email = pars[:email]
     shipper = Shipper.find_by(email: email)
     if shipper
@@ -23,6 +23,12 @@ class ShippersController < ApplicationController
     else
       shipper = Shipper.new(pars)
       shipper.save
+      location = Location.new
+      location.shipper_id = shipper.id
+      location.latitude = 0
+      location.longtitude = 0
+      location.timestamp = 0
+      location.save
       render json: {
           message: 'success',
           data: {
@@ -33,11 +39,9 @@ class ShippersController < ApplicationController
   end
 
   def login
-
     pars = params.require(:shipper).permit(:first_name, :second_name, :email, :password)
     email = pars[:email]
     password = pars[:password]
-
     shipper = Shipper.find_by_email(email)
     if shipper
       if shipper.password == password
@@ -57,7 +61,44 @@ class ShippersController < ApplicationController
           message: 'error',
       }, status: :ok
     end
+  end
 
+  def set_shipper_status
+    id = params[:id]
+    status = params[:status]
+    shipper = Shipper.find_by_id(id)
+    if shipper
+      shipper.status = status
+      shipper.save
+      render json: {
+        message: 'success',
+      }, status: :ok
+    else
+      render json: {
+        message: 'error',
+      }, status: :ok
+    end
+  end
+
+  def update_shipper
+    pars = params.require(:shipper).permit(:id, :first_name, :second_name, :email)
+    shipper = Shipper.find_by_id(pars['id'])
+    if shipper
+      shipper.first_name = pars['first_name']
+      shipper.second_name = pars['second_name']
+      shipper.email = pars['email']
+      shipper.save
+      render json: {
+        message: 'success',
+        data: {
+          shipper: shipper
+        }
+      }, status: :ok
+    else
+      render json: {
+        message: 'error',
+      }, status: :ok
+    end
   end
 
 end

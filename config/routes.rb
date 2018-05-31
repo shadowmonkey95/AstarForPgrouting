@@ -18,6 +18,8 @@ Rails.application.routes.draw do
     collection do
       post :register
       post :login
+      post :set_shipper_status
+      post :update_shipper
     end
     resources :locations do
       collection do
@@ -30,6 +32,8 @@ Rails.application.routes.draw do
   resources :invoices do
     collection do
       post :mark_as_read
+      post :create_invoice
+      get :shipper_get_invoices
     end
   end
   resources :paths
@@ -39,8 +43,9 @@ Rails.application.routes.draw do
     get :get_shop
     get :get_invoices
     post :set_invoice
-    post :set_shipper_status
+    post :accept_booking
     post :cancel_booking
+    post :create_shop
   end
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path

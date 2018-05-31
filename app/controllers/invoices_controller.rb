@@ -36,6 +36,48 @@ class InvoicesController < ApplicationController
     render json: {success: true}
   end
 
+  def create_invoice
+    pars = params.require(:invoice).permit(:shop_id, :shipper_id, :distance, :shipping_cost, :deposit)
+    invoice = Invoice.new(pars)
+    if invoice.save
+      render json: {
+          message: 'success',
+          data: {
+            invoice: invoice
+          }
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+  end
+
+  def shipper_get_invoices
+    shipper_id = params[:shipper_id]
+    invoices = Invoice.where(shipper_id: shipper_id)
+    if invoices
+      shops = []
+      invoices.each do |invoice|
+        shop = Shop.find(invoice.shop_id)
+        if shop
+          shops << shop
+        end
+      end
+      render json: {
+          message: 'success',
+          data: {
+              invoices: invoices,
+              shops: shops
+          }
+      }, status: :ok
+    else
+      render json: {
+          message: 'error',
+      }, status: :ok
+    end
+  end
+
   protected
   def json_request?
     request.format.json?
