@@ -1,0 +1,318 @@
+<!-- <% @distance.each do |t| %>
+  <% shipper = Location.find_by(shipper_id: t[1]) %>
+  [<%= shipper.longtitude %>,
+  <%= shipper.latitude %>],
+  <br>
+<% end %> -->
+
+<!-- <% @test_hungary.each do |t| %>
+  [<%= t.longtitude %>,
+  <%= t.latitude %>],
+  <br>
+<% end %> -->
+
+<!-- <html>
+<head>
+  <meta charset=utf-8 />
+  <title></title>
+  <script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+  <link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+  <style>
+    body {
+      margin: 0;
+      padding :0;
+    }
+    .map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<div id='map_simple' class='map'> </div>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoidG9ueW1pbmgiLCJhIjoiY2o5c2traDNiMDlucjMzcGxwZHQ3Mm9neCJ9.oyCFGycUCZd3n4b3uObbWQ';
+var mapSimple = L.mapbox.map('map_simple', 'mapbox.light')
+  .setView([37.8, -96], 4);
+//   var geojson3 = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: [105.8428817, 21.0070854]
+//       },
+//       properties: {
+//         'marker-color': '#ffa700',
+//         'marker-size': 'small',
+//       }
+//     }
+//   ]
+//   var myLayer3 = L.mapbox.featureLayer().setGeoJSON(geojson3).addTo(mapSimple);
+//   var geojson4 = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: [105.8436402, 21.0037709]
+//       },
+//       properties: {
+//         'marker-color': '#3bb2d0',
+//         'marker-size': 'small',
+//       }
+//     }
+//   ]
+//   var myLayer4 = L.mapbox.featureLayer().setGeoJSON(geojson4).addTo(mapSimple);
+// var points = [[105.8328817, 20.9970854], [105.8328817, 21.0170854], [105.8528817, 20.9970854], [105.8528817, 21.0170854]]
+// for (var i = 0 ; i < points.length ; i++) {
+//   var geojson = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: points[i]
+//       },
+//       properties: {
+//         'marker-color': '#3bb2d0',
+//         'marker-size': 'small',
+//       }
+//     }
+//   ]
+//   var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson).addTo(mapSimple);
+// }
+
+// var points2 = [
+// [105.8422206, 21.0032123],
+// [105.8415053, 21.0110473],
+// [105.847201, 21.0052171],
+// [105.8439489, 21.0115252],
+// [105.8401783, 21.0030497],
+// [105.8447214, 21.0115653],
+// [105.8479003, 21.0055729],
+// [105.8478272, 21.0053715],
+// [105.8398598, 21.002365],
+// [105.8470613, 21.0027558],
+// [105.8423647, 21.0135139],
+// [105.8420914, 21.0135338],
+// [105.8490739, 21.003649],
+// [105.8490035, 21.0034719],
+// [105.8430098, 21.014097],
+// [105.8452278, 21.0137687],
+// [105.8452278, 21.0137687],
+// [105.8436338, 21.0142461],
+// [105.8436338, 21.0142461],
+// [105.8428731, 21.0142828],
+// [105.8513678, 21.0087215],
+// [105.8406846, 20.9977715],
+// [105.8410976, 20.9976839],
+// [105.8476839, 21.0168343],
+// [105.8476239, 21.0168797],
+// [105.8333324, 21.0149858]]
+// for (var i = 0 ; i < points2.length ; i++) {
+//   var geojson = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: points2[i]
+//       },
+//       properties: {
+//         'marker-color': '#FF5733',
+//         'marker-size': 'small',
+//       }
+//     }
+//   ]
+//   var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson).addTo(mapSimple);
+// }
+
+// // hungarian 1
+// var points = [[105.832488, 21.007242], [105.839945, 21.002817], [105.843202, 21.003728], [105.834752, 21.009539],
+// [105.849574, 21.011445], [105.841157, 21.024594], [105.8428817, 21.0070854]]
+// for (var i = 0 ; i < points.length ; i++) {
+//   var geojson = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: points[i]
+//       },
+//       properties: {
+//         'marker-color': '#ffa700',
+//         'marker-size': 'small',
+//         'marker-symbol': i + 1,
+//       }
+//     }
+//   ]
+//   var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson).addTo(mapSimple);
+// }
+//
+// var points2 = [[105.831501, 21.010550], [105.8401783, 21.0030497],
+// [105.8436402, 21.0037709], [105.8326588, 21.0118919], [105.8513678, 21.0087215], [105.8409148, 21.0241681], [105.8430477, 21.0082962]]
+// for (var i = 0 ; i < points2.length ; i++) {
+//   var geojson2 = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: points2[i]
+//       },
+//       properties: {
+//         'marker-color': '#3bb2d0',
+//         'marker-size': 'small',
+//         'marker-symbol': i + 1,
+//       }
+//     }
+//   ]
+//   var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson2).addTo(mapSimple);
+// }
+//
+// var points3 = [[105.8436338, 21.0142461],
+// [105.8430098, 21.014097],
+// [105.8479003, 21.0055729],
+// [105.8447013, 21.0048242],
+// [105.8476239, 21.0168797],
+// [105.8416684, 21.0046553],
+// [105.847201, 21.0052171],
+// [105.843082, 21.0084885],
+// [105.8396928, 21.0082527],
+// [105.8408818, 21.0219097],
+// [105.8415053, 21.0110473],
+// [105.8396003, 21.0231678],
+// [105.8452278, 21.0137687],
+// [105.8333324, 21.0149858],
+// [105.8439489, 21.0115252],
+// [105.8452278, 21.0137687],
+// [105.8378464, 21.0216926],
+// [105.8318443, 21.0166131],
+// [105.8430992, 21.0088651],
+// [105.841248, 21.0082519],
+// [105.8451935, 21.0092096],
+// [105.8490739, 21.003649],
+// [105.8423647, 21.0135139],
+// [105.8478272, 21.0053715],
+// [105.8458871, 21.0059745],
+// [105.8420914, 21.0135338],
+// [105.8444433, 21.0184041],
+// [105.8422619, 21.0180836],
+// [105.8490035, 21.0034719],
+// [105.8428731, 21.0142828],
+// [105.8389278, 21.0218849],
+// [105.8436338, 21.0142461],
+// [105.8476839, 21.0168343],
+// [105.8447214, 21.0115653],
+// [105.8447035, 21.021203]]
+// for (var i = 0 ; i < points3.length ; i++) {
+//   var geojson3 = [
+//     {
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Point',
+//         coordinates: points3[i]
+//       },
+//       properties: {
+//         'marker-color': '#FF5733',
+//         'marker-size': 'small',
+//       }
+//     }
+//   ]
+//   var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson3).addTo(mapSimple);
+// }
+
+// hungarian 2
+var points = [[105.832488, 21.007242], [105.839945, 21.002817], [105.843202, 21.003728], [105.834752, 21.009539],
+[105.849574, 21.011445], [105.841157, 21.024594], [105.8428817, 21.0070854]]
+for (var i = 0 ; i < points.length ; i++) {
+  var geojson = [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: points[i]
+      },
+      properties: {
+        'marker-color': '#ffa700',
+        'marker-size': 'small',
+        'marker-symbol': i + 1,
+      }
+    }
+  ]
+  var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson).addTo(mapSimple);
+}
+
+var points2 = [[105.831501, 21.010550], [105.8401783, 21.0030497],
+[105.8436402, 21.0037709], [105.8406928, 21.0082527], [105.8513678, 21.0087215], [105.8409148, 21.0241681], [105.8416684, 21.0046553]]
+for (var i = 0 ; i < points2.length ; i++) {
+  var geojson2 = [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: points2[i]
+      },
+      properties: {
+        'marker-color': '#3bb2d0',
+        'marker-size': 'small',
+        'marker-symbol': i + 1,
+      }
+    }
+  ]
+  var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson2).addTo(mapSimple);
+}
+
+var points3 = [[105.8436338, 21.0142461],
+[105.8430098, 21.014097],
+[105.8479003, 21.0055729],
+[105.8447013, 21.0048242],
+[105.8476239, 21.0168797],
+[105.8430477, 21.0082962],
+[105.847201, 21.0052171],
+[105.843082, 21.0084885],
+[105.8326588, 21.0118919],
+[105.8408818, 21.0219097],
+[105.8415053, 21.0110473],
+[105.8396003, 21.0231678],
+[105.8452278, 21.0137687],
+[105.8333324, 21.0149858],
+[105.8439489, 21.0115252],
+[105.8452278, 21.0137687],
+[105.8378464, 21.0216926],
+[105.8318443, 21.0166131],
+[105.8430992, 21.0088651],
+[105.841248, 21.0082519],
+[105.8451935, 21.0092096],
+[105.8490739, 21.003649],
+[105.8423647, 21.0135139],
+[105.8478272, 21.0053715],
+[105.8458871, 21.0059745],
+[105.8420914, 21.0135338],
+[105.8444433, 21.0184041],
+[105.8422619, 21.0180836],
+[105.8490035, 21.0034719],
+[105.8428731, 21.0142828],
+[105.8389278, 21.0218849],
+[105.8436338, 21.0142461],
+[105.8476839, 21.0168343],
+[105.8447214, 21.0115653],
+[105.8447035, 21.021203]]
+for (var i = 0 ; i < points3.length ; i++) {
+  var geojson3 = [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: points3[i]
+      },
+      properties: {
+        'marker-color': '#FF5733',
+        'marker-size': 'small',
+        // 'marker-symbol': i + 1,
+      }
+    }
+  ]
+  var myLayer = L.mapbox.featureLayer().setGeoJSON(geojson3).addTo(mapSimple);
+}
+
+</script>
+</body>
+</html> -->

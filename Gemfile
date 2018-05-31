@@ -82,3 +82,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'fcm', '~> 0.0.2'
 gem 'haversine', '~> 0.3.2'
 # gem 'will_paginate-bootstrap4', '~> 0.2.2'
+gem 'thin', '~> 1.7'
+gem 'munkres', '~> 0.1.0'
