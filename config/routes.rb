@@ -8,11 +8,14 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   resources :ways
 
+  # resources :requests
+
   resources :users do
     resources :shops do
       resources :requests
     end
   end
+  get "/requests" => 'requests#user_requests',    :as => :user_requests
 
   resources :shippers do
     collection do

@@ -1,36 +1,61 @@
-<%= simple_form_for([current_user, @shop, @request]) do |r| %>
-    <%= r.input :address, label: "Delivery Address" %>
-    <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
-    <div class="form-row">
-      <div class="col">
-        <%= r.input :longitude, class:"form-control" %>
-      </div>
-      <div class="col">
-        <%= r.input :latitude, class:"form-control" %>
-      </div>
-    </div>
-    <%= r.input :deposit, label: "Deposit Cost" %>
-    <small class="form-text text-muted">Enter the amount of money the shipper have to deposit with the shop </small>
-    <%= r.input :comment %>
-    <div class='input-append bootstrap-timepicker-component' style='display: inline;'>
-    <%= r.input :reserve, id: "timepicker1", type: "text", class: "form-control input-small" %>
-    </div>
-    <p></p>
-    <%= r.button :submit, class: "btn btn-outline-primary" %>
-<% end %>
+<div class="container-fluid" style="width: 50%">
+  <div class="container">
+    <%= simple_form_for([current_user, @shop, @request]) do |r| %>
+        Destination Address:<%= r.input :address, label: false, class: "destination" %>
+        <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
+        <div class="form-row">
+          <div class="col">
+            Longitude:
+            <%= r.input :longitude, label:false, class:"form-control" %>
+          </div>
+          <div class="col">
+            Latitude:
+            <%= r.input :latitude, label:false, class:"form-control" %>
+          </div>
+        </div>
+        Deposit Cost:
+        <%= r.input :deposit, label: false %>
+        <small class="form-text text-muted">Enter the amount of money the shipper have to deposit with the shop </small>
+        Comment:
+        <%= r.input :comment, label: false %>
 
-<input type="radio" name="bedStatus" id="allot" checked="checked" value="allot">Allot
-<input type="radio" name="bedStatus" id="transfer" value="transfer">Transfer
+        Do you want to pre-order?<br>
+        <%= r.collection_radio_buttons(:has_reserve, [['Yes', 1],['No(Order now)', 0]], :last, :first, html_options: { class: 'form-control' }, :checked => ['No (Order now)', 0]) do |b| %>
+            <pre><%= b.label(class: 'radio-custom') { b.radio_button + b.text + '               '} %></pre>
+        <% end %>
+        <div class='input-append bootstrap-timepicker-component' style='display: inline;'>
+          <div class="calendar" style="display: none">
+            Pre-order time:
+            <%= r.input :reserve, label: false, id: "timepicker1", type: "text", class: "form-control input-small" %>
+          </div>
+        </div>
+        <p></p>
+        <%= r.button :submit, class: "btn btn-outline-primary" %>
+    <% end %>
+  </div>
+</div>
+
 
 <script>
-    $(document).ready(function () {
-        $('input:radio[name=bedStatus]:checked').change(function () {
-            if ($("input[name='bedStatus']:checked").val() == 'allot') {
-                alert("Allot Thai Gayo Bhai");
+    $(document).ready(function() {
+        $('input[type=radio][name="request[has_reserve]"]').change(function() {
+            if (this.value == 1) {
+                $('.calendar').show();
             }
-            if ($("input[name='bedStatus']:checked").val() == 'transfer') {
-                alert("Transfer Thai Gayo");
+            else if (this.value == 0) {
+                $('.calendar').hide();
             }
         });
+    });
+</script>
+<script>
+    $('input:text#request_address').on('keyup', function() {
+        var value = $(this).val();
+        $('#request_latitude').prop( "disabled", true )
+        $('#request_longitude').prop( "disabled", true )
+        if (value.length == 0){
+            $('#request_latitude').prop( "disabled", false )
+            $('#request_longitude').prop( "disabled", false )
+        }
     });
 </script>

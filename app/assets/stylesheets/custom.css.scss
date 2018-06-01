@@ -520,10 +520,33 @@ input {
   padding-top: 20px;
   padding-bottom: 20px;
 }
-
+//End of container
+//Map
 #map {
   min-height: 433px;
   min-width: 548px;
   border: 1px solid #343a40;
-
 }
+//End of map
+//Radio
+.radio-custom {
+  display: none;
+}
+
+label[for=request_has_reserve_1]
+{
+  display: table-header-group;
+}
+
+label[for=request_has_reserve_0]
+{
+  display: table-header-group;
+}
+//End of radio
+//Search
+
+
+.easy-autocomplete {
+  height: 46px;
+}
+//End of search

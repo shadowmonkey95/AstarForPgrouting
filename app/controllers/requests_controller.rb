@@ -5,8 +5,8 @@ class RequestsController < ApplicationController
   helper_method :sort_column, :sort_direction
 
   before_action :authenticate_user!, :invoice_notification
-  before_action :find_shop
-  before_action :find_request, except: [:index, :new, :create]
+  before_action :find_shop, except: [:user_requests]
+  before_action :find_request, except: [:index, :new, :create, :user_requests]
 
   # load_and_authorize_resource :shop
   load_and_authorize_resource :request, :through => :shop
@@ -14,6 +14,19 @@ class RequestsController < ApplicationController
   def index
     @requests = Request.where({ :shop_id => params[:shop_id]}).page(params[:page]).per(8)
   end
+
+  def user_requests
+      @shops = Shop.where({ :user_id => current_user.id})
+      @requests = Request.where("shop_id IN (?)", @shops)
+  end
+
+  # if (params[:shop_id] != nil)
+  #   @shop = Shop.find(params[:shop_id])
+  #   @requests = Request.where({ :shop_id => params[:shop_id]}).page(params[:page]).per(8)
+  # else
+  #   @shops = Shop.where({ :user_id => current_user.id})
+  #   @requests = Request.where("shop_id IN (?)", @shops)
+  # end
 
   def show
     @requests = Request.find(params[:id])
@@ -25,13 +38,17 @@ class RequestsController < ApplicationController
 
   def create
     @request = @shop.requests.build(request_params)
+    # @has_reserve = Request.select(:has_reserve).distinct
+    # @request.update_columns(Time.zone.now)
     @request.status = "Pending"
+    if (@request.reserve <= Time.zone.now)
+      @request.reserve = Time.zone.now
+    end
     if @request.save
       # check reserve
       File.open("requests.txt",'a+') do |filea|
         filea.puts @request.id
       end
-      
       redirect_to user_shop_requests_path(@shop)
     else
       render 'new'
@@ -59,7 +76,7 @@ class RequestsController < ApplicationController
 
   private
   def request_params
-    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve, :deposit)
+    params.require(:request).permit(:address, :longitude, :latitude, :comment, :status, :reserve, :deposit, :has_reserve)
   end
 
   def invoice_notification
