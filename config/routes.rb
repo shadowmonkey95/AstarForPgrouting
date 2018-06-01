@@ -9,13 +9,14 @@ Rails.application.routes.draw do
   resources :ways
 
   # resources :requests
-
+  get :requests, controller: :all_requests
+  delete 'requests/:id/destroy' => 'requests#destroy', as: :requests_destroy
   resources :users do
     resources :shops do
       resources :requests
     end
   end
-  get "/requests" => 'requests#user_requests',    :as => :user_requests
+
 
   resources :shippers do
     collection do

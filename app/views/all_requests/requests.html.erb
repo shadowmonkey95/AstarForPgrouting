@@ -34,23 +34,19 @@
                         <td><%= r.updated_at.strftime("%d/%m/%Y %H:%M") %></td>
 
                         <td colspan="2">
-                          <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
-                          <%= button_to "Delete", user_shop_request_path(id: r.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
+                          <%= button_to "Edit", edit_user_shop_request_path(current_user.id, r.shop_id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
+                          <%= button_to "Delete", requests_destroy_path(user_id: current_user.id, shop_id: r.shop_id, id: r.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
                         </td>
                       </tr>
                   <%- end -%>
                   </tbody>
                 </table>
-                  <div>
-                    <%= paginate @requests, param_name: "requests", params: {active_tab: 'all'} %>
-                  </div>
+                <div>
+                  <%= paginate @requests, param_name: "requests", params: {active_tab: 'all'} %>
+                </div>
               </div>
         <% end %>
-        <div class="row">
-          <div class="col-md-0 offset-md-9">
-            <%= button_to "Create new request", new_user_shop_request_path, class: "btn btn-outline-primary", type: "button", :method => :get %>
-          </div>
-        </div>
+
         </div>
 
       </div>
@@ -80,23 +76,19 @@
                         <td><%= r.updated_at.strftime("%d/%m/%Y %H:%M") %></td>
 
                         <td colspan="2">
-                          <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
-                          <%= button_to "Delete", user_shop_request_path(id: r.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
+                          <%= button_to "Edit", edit_user_shop_request_path(current_user.id, r.shop_id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
+                          <%= button_to "Delete", requests_destroy_path(user_id: current_user.id, shop_id: r.shop_id, id: r.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
                         </td>
                       </tr>
                   <%- end -%>
                   </tbody>
                 </table>
-                  <div>
-                    <%= paginate @requests_pending, param_name: "requests_pending", params: {active_tab: 'pending'} %>
-                  </div>
+                <div>
+                  <%= paginate @requests_pending, param_name: "requests_pending", params: {active_tab: 'pending'} %>
+                </div>
               </div>
         <% end %>
-        <div class="row">
-          <div class="col-md-0 offset-md-9">
-            <%= button_to "Create new request", new_user_shop_request_path, class: "btn btn-outline-primary", type: "button", :method => :get %>
-          </div>
-        </div>
+
         </div>
       </div>
       <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
@@ -125,23 +117,18 @@
                         <td><%= r.updated_at.strftime("%d/%m/%Y %H:%M") %></td>
 
                         <td colspan="2">
-                          <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
-                          <%= button_to "Delete", user_shop_request_path(id: r.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
+                          <%= button_to "Edit", edit_user_shop_request_path(current_user.id, r.shop_id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
+                          <%= button_to "Delete", requests_destroy_path(user_id: current_user.id, shop_id: r.shop_id, id: r.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
                         </td>
                       </tr>
                   <%- end -%>
                   </tbody>
                 </table>
-                  <div>
-                    <%= paginate @requests_found, param_name: "requests_found", params: {active_tab: 'found'} %>
-                  </div>
+                <div>
+                  <%= paginate @requests_found, param_name: "requests_found", params: {active_tab: 'found'} %>
+                </div>
               </div>
         <% end %>
-        <div class="row">
-          <div class="col-md-0 offset-md-9">
-            <%= button_to "Create new request", new_user_shop_request_path, class: "btn btn-outline-primary", type: "button", :method => :get %>
-          </div>
-        </div>
         </div>
       </div>
     </div>

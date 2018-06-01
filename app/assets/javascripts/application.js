@@ -11,7 +11,7 @@
 // about supported directives.
 //
 //= require gmaps/google
-//= require rails-ujs
+
 //= require jquery3
 //= require jquery
 //= require popper

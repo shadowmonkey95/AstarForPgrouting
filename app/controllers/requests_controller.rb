@@ -12,13 +12,20 @@ class RequestsController < ApplicationController
   load_and_authorize_resource :request, :through => :shop
 
   def index
-    @requests = Request.where({ :shop_id => params[:shop_id]}).page(params[:page]).per(8)
+    @requests = Request.where({ :shop_id => params[:shop_id]}).page(params[:requests]).per(6)
+    @requests_count = Request.where({ :shop_id => params[:shop_id]}).count
+
+    @requests_pending = Request.where({ :shop_id => params[:shop_id], :status => "Pending"}).page(params[:requests_pending]).per(6)
+    @requests_pending_count = Request.where({ :shop_id => params[:shop_id], :status => "Pending"}).count
+
+    @requests_found = Request.where({ :shop_id => params[:shop_id], :status => "Found shipper"}).page(params[:requests_found]).per(6)
+    @requests_found_count = Request.where({ :shop_id => params[:shop_id], :status => "Found shipper"}).count
   end
 
-  def user_requests
-      @shops = Shop.where({ :user_id => current_user.id})
-      @requests = Request.where("shop_id IN (?)", @shops)
-  end
+  # def user_requests
+  #     @shops = Shop.where({ :user_id => current_user.id})
+  #     @requests = Request.where("shop_id IN (?)", @shops)
+  # end
 
   # if (params[:shop_id] != nil)
   #   @shop = Shop.find(params[:shop_id])
