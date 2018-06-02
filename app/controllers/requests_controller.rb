@@ -52,9 +52,10 @@ class RequestsController < ApplicationController
       @request.reserve = Time.zone.now
     end
     if @request.save
-      # check reserve
-      File.open("requests.txt",'a+') do |filea|
-        filea.puts @request.id
+      if @request.has_reserve == 0
+        File.open("requests.txt",'a+') do |filea|
+          filea.puts @request.id
+        end
       end
       redirect_to user_shop_requests_path(@shop)
     else
