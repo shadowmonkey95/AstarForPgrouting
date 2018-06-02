@@ -1,1 +1,29 @@
-<%= @request.address %>
+<h1 align="center"> Request's Information</h1>
+<div class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <span><b>Delivery Address: </b></span><%= @request.address %><br>
+        <span><b>Longitude: </b></span><%= @request.longitude %><br>
+        <span><b>Latitude: </b></span><%= @request.latitude %><br>
+        <span><b>Status: </b></span><%= @request.status %><br>
+        <% unless @request.comment.blank? %>
+            <span><b>Comment: </b></span><%= @request.comment %><br>
+        <% end %>
+
+        <% unless @request.phone.blank? %>
+            <span><b>Phone: </b></span><%= @request.phone %><br>
+        <% end %>
+
+        <% if @request.has_reserve == 1 %>
+            <span><b>Pre-order: </b></span><%= @request.reserve.strftime("%H:%M | %d/%m/%Y") %><br>
+        <% end %>
+
+        <% unless @request.shipper_id.blank?  %>
+            <span><b>Shipper: </b></span><%= Shipper.find(@request.shipper_id).first_name + " " + Shipper.find(@request.shipper_id).second_name%><br>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>
