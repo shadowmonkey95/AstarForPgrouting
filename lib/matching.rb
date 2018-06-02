@@ -102,7 +102,7 @@ module Matching
                 distance << s
               end
               distance = distance.sort_by{ |d| [d[0], d[1]] }
-              # sendNoti(Shipper.find_by_id(distance.first[1]).req_id, request.id, 0)
+              sendNoti(Shipper.find_by_id(distance.first[1]).req_id, request.id, 0)
               File.open("shipper.txt",'w') do |filea|
                 filea.puts "#{request.id}, #{distance.first[1]}"
               end
@@ -218,17 +218,20 @@ module Matching
       distance
     end
 
-    def self.sendNoti(req_id, invoice_id, index)
+    def self.sendNoti(req_id, request_id, index)
+      request = Request.find_by_id(request_id)
+      shop = Shop.find_by_id(request.shop_id)
+      address = shop.address
       fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
       registration_ids = [req_id]
       options = {
           data: {
               data: {
-                  invoice_id: invoice_id,
-                  index: index
+                  request_id: request_id,
+                  address: address,
+                  index: index,
               }
           }
-
       }
       fcm.send(registration_ids, options)
     end
@@ -249,7 +252,8 @@ module Matching
           locations = Location.where('latitude < ?', latitude_max.to_s).where('latitude > ?', latitude_min.to_s).where('longtitude < ?', longitude_max.to_s).where('longtitude > ?', longitude_min.to_s)
           if locations.count > 0
             locations.each do |location|
-              if location.shipper.status == "available"
+              sh = Shipper.find_by_id(location.shipper_id)
+              if sh.status == "available"
                 available_locations << location
               end
             end
@@ -276,7 +280,7 @@ module Matching
                 order by the_geom <-> st_setsrid(st_makepoint(#{lon}, #{lat}),4326)
                 limit 1
               "
-        # nearest_point = ActiveRecord::Base.connection.execute(sql)
+        nearest_point = ActiveRecord::Base.connection.execute(sql)
         nearest_point[0]['id']
       end
 

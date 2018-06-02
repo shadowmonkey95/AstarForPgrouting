@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     post :accept_booking
     post :cancel_booking
     post :create_shop
+    post :test
   end
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path

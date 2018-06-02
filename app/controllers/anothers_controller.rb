@@ -6,7 +6,7 @@ class AnothersController < ApplicationController
 
   def index
     fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
-    registration_ids = ["fYOFBG4bsoY:APA91bHk5SVq3Ek9b-m2rZ0LnBHqi8QWfATl0iWvSSKyaBq18eOjlo_iilKrTHN1ocB7aa2ytYFUdjTiaYTvl6HX6wHaPYq8c3TpVjhclhR9rBwwsENmetstUJjTWRkkd02YHmKQ8xRC"]
+    registration_ids = ["czSb-rGxvsg:APA91bFxtd0hC2lo8k4wVVp_haceqe-48fSotkr-0KEPuhvdgUhiDY-xZJ4CPeyf5llOiZF0y-6tWeb86D1Fh1y-8yBkTZ2ZXgOsiCCy5e1zpn2aRAEkEJf5UhJEuCloZK94Qi3Kv1nP"]
     options = {
         data: {
             data: {
@@ -172,6 +172,16 @@ class AnothersController < ApplicationController
           message: 'error',
       }, status: :ok
     end
+  end
+
+  def test
+    pars = params[:id]
+    render json: {
+      message: 'success',
+      data: {
+        id: pars
+      }
+    }
   end
 
 end
