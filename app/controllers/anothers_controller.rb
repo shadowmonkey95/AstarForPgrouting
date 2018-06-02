@@ -6,7 +6,7 @@ class AnothersController < ApplicationController
 
   def index
     fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
-    registration_ids = ["czSb-rGxvsg:APA91bFxtd0hC2lo8k4wVVp_haceqe-48fSotkr-0KEPuhvdgUhiDY-xZJ4CPeyf5llOiZF0y-6tWeb86D1Fh1y-8yBkTZ2ZXgOsiCCy5e1zpn2aRAEkEJf5UhJEuCloZK94Qi3Kv1nP"]
+    registration_ids = ["ebX-8EwPqoA:APA91bFVZ6V_iDPH_ZiYV9lsKc9GCP3kGbO9ARn7MlWbPw18Gk5PnNbmdKhNBz5_NjhYEhodv3XAnRkXaEkHDG0rRCquWwgjiMFS4Wton4WFH8NnMlUXMgsIVWOy-VOF2AGON_0gX6hQ"]
     options = {
         data: {
             data: {
@@ -114,14 +114,80 @@ class AnothersController < ApplicationController
   def accept_booking
     shipper_id = params[:shipper_id]
     request_id = params[:request_id]
+    request = Request.find_by_id(request_id)
+    path = set_path(request.shop_id, shipper_id)
+
+    invoice = Invoice.new
+    invoice.shop_id = shop_id
+    invoice.shipper_id = shipper_id
+    invoice.distance = distance.first[0]
+    invoice.distance2 = distance.first[0]
+    invoice.shipping_cost = shipping_cost
+    invoice.deposit = 500000
+    invoice.user_id = shop.user_id
+    invoice.save
+    request.update_columns(status: "Found shipper")
+    if invoice.save
+      invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+    end
+
     render json: {
       message: 'success',
       data: {
         shipper_id: shipper_id,
         request_id: request_id,
-        path: "[[\"105.85242100\", \"21.01362710\"], [\"105.85178540\", \"21.01357430\"], [\"105.85168910\", \"21.01173370\"], [\"105.85160090\", \"21.01049530\"], [\"105.85156150\", \"21.00990890\"], [\"105.85151300\", \"21.00927490\"], [\"105.85146800\", \"21.00863140\"], [\"105.85098820\", \"21.00863450\"], [\"105.84867990\", \"21.00836830\"], [\"105.84839400\", \"21.00831750\"], [\"105.84748390\", \"21.00815010\"], [\"105.84681810\", \"21.00801950\"], [\"105.84579370\", \"21.00788790\"], [\"105.84432140\", \"21.00769890\"], [\"105.84384210\", \"21.00763660\"], [\"105.84269530\", \"21.00752020\"], [\"105.84183030\", \"21.00752810\"], [\"105.84149020\", \"21.00757410\"], [\"105.84135140\", \"21.00758610\"], [\"105.84121970\", \"21.00760460\"], [\"105.84070320\", \"21.00769480\"], [\"105.84022380\", \"21.00781900\"], [\"105.83893330\", \"21.00807820\"], [\"105.83755860\", \"21.00948020\"], [\"105.83661410\", \"21.01055440\"], [\"105.83591010\", \"21.01000750\"], [\"105.83587080\", \"21.00997620\"], [\"105.83526310\", \"21.00949230\"], [\"105.83517960\", \"21.00955460\"]]"
+        path: path
       }
     }, status: :ok
+  end
+
+  def set_path(shop_id, shipper_id)
+    shop = Shop.find_by_id(shop_id)
+    shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
+
+    location = Location.find_by(shipper_id: shipper_id)
+    location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
+
+    sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+          ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4 )"
+    result = ActiveRecord::Base.connection.execute(sql)
+
+    node_result = Array.new
+    result.each do |result|
+      node_result << result['node']
+    end
+
+    path_result = Array.new
+    node_result.each do |node|
+      tmp = Array.new
+      tmp << Vertice.find(node).lat.to_s
+      tmp << Vertice.find(node).lon.to_s
+      path_result << tmp
+    end
+
+    path = Path.find_by(shipper_id: shipper_id)
+    if path
+      path.path = path_result
+      path.save
+    else
+      path = Path.new
+      path.shipper_id = shipper_id
+      path.path = path_result
+      path.save
+    end
+
+    path.path
+  end
+
+  def findNearestPoint(lat, lon)
+    sql = "
+            select id
+            from public.ways_vertices_pgr
+            order by the_geom <-> st_setsrid(st_makepoint(#{lon}, #{lat}),4326)
+            limit 1
+          "
+    nearest_point = ActiveRecord::Base.connection.execute(sql)
+    nearest_point[0]['id']
   end
 
   def cancel_booking
