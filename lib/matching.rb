@@ -161,20 +161,20 @@ module Matching
       #   shipper = Shipper.find_by_id(shipper_id)
       #   shipping_cost = shippingCost(distance.first[0])
       #
-      #   invoice = Invoice.new
-      #   invoice.shop_id = shop_id
-      #   invoice.shipper_id = shipper_id
-      #   invoice.distance = distance.first[0]
-      #   invoice.distance2 = distance.first[0]
-      #   invoice.shipping_cost = shipping_cost
-      #   invoice.deposit = 500000
-      #   invoice.user_id = shop.user_id
-      #   invoice.save
-      #   request.update_columns(status: "Found shipper")
-      #   if invoice.save
-      #     invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-      #   end
-      #
+        # invoice = Invoice.new
+        # invoice.shop_id = shop_id
+        # invoice.shipper_id = shipper_id
+        # invoice.distance = distance.first[0]
+        # invoice.distance2 = distance.first[0]
+        # invoice.shipping_cost = shipping_cost
+        # invoice.deposit = 500000
+        # invoice.user_id = shop.user_id
+        # invoice.save
+        # request.update_columns(status: "Found shipper")
+        # if invoice.save
+        #   invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
+        # end
+
         # set_available_shippers(distance)
       #   set_path(shop_id, shipper_id)
       #   sendNoti(shipper.req_id, invoice.id)
