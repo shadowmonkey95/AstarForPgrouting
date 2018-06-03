@@ -47,7 +47,12 @@ class RequestsController < ApplicationController
     @request = @shop.requests.build(request_params)
     # @has_reserve = Request.select(:has_reserve).distinct
     # @request.update_columns(Time.zone.now)
-    @request.status = "Pending"
+    # @request.status = "Pending"
+    if (@request.has_reserve == 0)
+      @request.status = "Processing"
+    else
+      @request.status = "Pending"
+    end
     if (@request.reserve <= Time.zone.now)
       @request.reserve = Time.zone.now
     end
