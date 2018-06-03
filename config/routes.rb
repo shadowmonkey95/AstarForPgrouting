@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     post :cancel_booking
     post :create_shop
     post :test
+    post :set_request_status
   end
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
