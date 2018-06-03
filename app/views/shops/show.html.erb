@@ -7,7 +7,11 @@
         <span><b>Address: </b></span><%= @shop.address %><br>
         <span><b>Longitude: </b></span><%= @shop.longitude %><br>
         <span><b>Latitude: </b></span><%= @shop.latitude %><br>
-        <%= button_to "Request", user_shop_requests_path(current_user.id, @shop.id), class: "btn btn-outline-dark", type: "button", form: {style: 'display:inline-block;'}, :method => :get%>
+        <span><b>Registered at: </b></span><%= @shop.created_at.strftime("%d/%m/%Y %H:%M") %><br>
+        <span><b>Last edit at: </b></span><%= @shop.updated_at.strftime("%d/%m/%Y %H:%M") %><br>
+
+        <%= button_to "Request List", user_shop_requests_path(current_user.id, @shop.id), class: "btn btn-outline-dark", type: "button", form: {style: 'display:inline-block;'}, :method => :get%>
+        <%= button_to "Create new request", new_user_shop_request_path(:shop_id => @shop.id), class: "btn btn-outline-primary", type: "button", form: {style: 'display:inline-block;'}, :method => :get %>
 
       </div>
       <div class="col">

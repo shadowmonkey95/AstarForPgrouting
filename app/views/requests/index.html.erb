@@ -3,7 +3,7 @@
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">All(<%=@requests_count %>)</a>
-        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Pending Requests(<%=@requests_pending_count %>)</a>
+        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Finding Shipper(<%=@requests_pending_count %>)</a>
         <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Founded Shipper(<%=@requests_found_count %>)</a>
       </div>
     </nav>
@@ -22,7 +22,9 @@
                     <th><%= sortable "address", "Destination Address" %></th>
                     <th><%= sortable "status" %></th>
                     <th><%= sortable "created_at" %></th>
-                    <th><%= sortable "updated_at" %></th>
+                    <!--<th><%= sortable "updated_at" %></th>-->
+                    <th><%= sortable "reserve" %></th>
+
                   </tr>
                   </thead>
 
@@ -32,7 +34,9 @@
                         <td><%= r.address %></td>
                         <td><%= r.status %></td>
                         <td><%= r.created_at.strftime("%d/%m/%Y %H:%M") %></td>
-                        <td><%= r.updated_at.strftime("%d/%m/%Y %H:%M") %></td>
+                        <!--<td><%= r.updated_at.strftime("%d/%m/%Y %H:%M") %></td>-->
+                        <td><%= r.reserve.strftime("%d/%m/%Y %H:%M") %></td>
+
 
                         <td colspan="2">
                           <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, id: r.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>

@@ -50,6 +50,9 @@ class ShopsController < ApplicationController
     #     format.html  { render 'new' }
     #   end
     # end
+    if (@shop.address.blank?)
+      @shop.address = "undefined address"
+    end
 
     if @shop.save
       redirect_to root_path
@@ -61,12 +64,13 @@ class ShopsController < ApplicationController
 
   def destroy
     @shop = Shop.find(params[:id])
-    @requests = Request.where(["shop_id = ? and status = ?", @shop.id, "Pending"])
+    @requests = Request.where(["shop_id = ? and status in(?,?,?)", @shop.id, "Processing", "Found shipper", "Shipper arrived"])
+
     if @requests.empty?
       @shop.destroy
       redirect_to root_path
     else
-      flash.alert = "Cannot delete!!! There are pending requests in this shops"
+      flash.alert = "Cannot delete!!! There are processing requests in this shops"
       redirect_to root_path
     end
     # @shop.destroy
