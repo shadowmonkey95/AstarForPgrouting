@@ -16,11 +16,10 @@ module Matching
           time_end = time_now + (60 * 60 * 1000)
           sec = (time_end.to_f / 1000).to_s
           date = Date.strptime(sec, '%s')
-          requests = Request.where('reserve < ?', date)
-          # thêm câu where check time = 0 ngay 1 sau 2 đã giao
+          requests = Request.where(has_reserve: 1).where('reserve < ?', date).where(status: 'Pending')
           list = []
           delete = []
-          if requests
+          if requests.count != 0
             (0...requests.count).each do |k|
               shop = Shop.find_by_id(requests[k].shop_id)
               locations = findShipperArea(shop)
@@ -66,7 +65,7 @@ module Matching
           matched
           list
           # matched.each do |m|
-          #   # sendNoti(Shipper.find_by_id(list[m[1]]).req_id, requests[m[0]].id, 0)
+            # sendNoti(Shipper.find_by_id(list[m[1]]).req_id, requests[m[0]].id, 0)
           # end
           # sleep 300
       #   end
@@ -102,6 +101,13 @@ module Matching
                 distance << s
               end
               distance = distance.sort_by{ |d| [d[0], d[1]] }
+
+              invoice = Invoice.new
+              invoice.shop_id = shop.id
+              invoice.user_id = shop.user_id
+              invoice.save
+              request.update_columns(status: "Found shipper")
+
               sendNoti(Shipper.find_by_id(distance.first[1]).req_id, request.id, 0)
               File.open("shipper.txt",'w') do |filea|
                 filea.puts "#{request.id}, #{distance.first[1]}"
