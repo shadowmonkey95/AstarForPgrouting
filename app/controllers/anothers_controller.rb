@@ -243,15 +243,17 @@ class AnothersController < ApplicationController
     available = availables.shipper_id.split(', ')
     next_index = index.to_i + 1
     next_shipper = available[next_index]
+    request = Request.find_by_id(request_id)
+    shop = Shop.find_by_id(request.shop_id)
     if next_shipper
       fcm = FCM.new("AAAAy3ELMug:APA91bG8px-2Hoe7fALIS8KTJWqNMvkUnIZxNRAqeudKXkIxkGZqQryNa6RceGAx7mL0-U1xJrOLLO-P9lZjsZXZLiFajA8dwuxYS1QKZVGap7pxrnBZym2sbv5PdgZb2B68iJ_OBNXv")
       registration_ids = [Shipper.find_by_id(next_shipper).req_id]
       options = {
           data: {
               data: {
-                  request_id: 265,
-                  address: "68 Hoàng Cầu Mới, Chợ Dừa, Đống Đa, Hà Nội, Việt Nam",
-                  index: 1,
+                  request_id: request_id,
+                  address: shop.address,
+                  index: next_index,
               }
           }
       }
