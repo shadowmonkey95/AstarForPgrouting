@@ -50,24 +50,27 @@ module Matching
             end
           end
 
-        # list
-          # cost_matrix = []
-          # requests.each do |request|
-          #   cost_matrix_child = []
-          #   list.each do |i|
-          #     shop = Shop.find_by_id(request.shop_id)
-          #     locate = Location.find_by(shipper_id: i)
-          #     cost_matrix_child << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, locate.latitude.to_f, locate.longtitude.to_f)
-          #   end
-          #   cost_matrix << cost_matrix_child
-          # end
-          # cost_matrix
-          # matched = Munkres.new(cost_matrix).find_pairings
-          # matched
-          # list
-          # matched.each do |m|
-            # sendNoti(Shipper.find_by_id(list[m[1]]).req_id, requests[m[0]].id, 0)
-          # end
+          cost_matrix = []
+          requests.each do |request|
+            cost_matrix_child = []
+            list.each do |i|
+              shop = Shop.find_by_id(request.shop_id)
+              locate = Location.find_by(shipper_id: i)
+              cost_matrix_child << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, locate.latitude.to_f, locate.longtitude.to_f)
+            end
+            cost_matrix << cost_matrix_child
+          end
+          cost_matrix
+          if cost_matrix.count != 0
+            matched = Munkres.new(cost_matrix).find_pairings
+            matched
+            list
+            matched.each do |m|
+              sendNoti(Shipper.find_by_id(list[m[1]]).req_id, requests[m[0]].id, 0)
+            end
+          else
+            p 'Khong co don hang'
+          end
           # sleep 300
       #   end
       # end
@@ -102,13 +105,6 @@ module Matching
                 distance << s
               end
               distance = distance.sort_by{ |d| [d[0], d[1]] }
-
-              invoice = Invoice.new
-              invoice.shop_id = shop.id
-              invoice.user_id = shop.user_id
-              invoice.save
-              request.update_columns(status: "Found shipper")
-
               sendNoti(Shipper.find_by_id(distance.first[1]).req_id, request.id, 0)
               File.open("shipper.txt",'w') do |filea|
                 filea.puts "#{request.id}, #{distance.first[1]}"
@@ -298,6 +294,23 @@ module Matching
         c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
         result = 6371000 * c
         result
+      end
+
+      def self.st_distance_algorithm(lat1, lon1, lat2, lon2)
+        dLat = (lat2 - lat1).abs * Math::PI / 180
+        dLon = (lon2 - lon1).abs * Math::PI / 180
+        a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math::PI / 180) * Math.cos(lat2 * Math::PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+        result = 6371000 * c
+        result
+        # sql = "
+        #         SELECT ST_Distance(
+        #           ST_GeomFromText('POINT(#{lat1} #{lon1})',4326),
+        #           ST_GeomFromText('POINT(#{lat2} #{lon2})', 4326)
+        #         );
+        #       "
+        # result = ActiveRecord::Base.connection.execute(sql)
+        # result[0]['st_distance'] * 1000
       end
 
       def self.set_available_shippers(distance, request_id)

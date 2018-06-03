@@ -115,7 +115,7 @@ class AnothersController < ApplicationController
     shipper_id = params[:shipper_id]
     request_id = params[:request_id]
     request = Request.find_by_id(request_id)
-    path = set_path(request.shop_id, shipper_id)
+    # path = set_path(request.shop_id, shipper_id)
 
     invoice = Invoice.new
     invoice.shop_id = request.shop_id
@@ -134,7 +134,7 @@ class AnothersController < ApplicationController
       data: {
         shipper_id: shipper_id,
         request_id: request_id,
-        path: path
+        path: '[["21.0288648", "105.7794524"], ["21.0286231", "105.7809988"], ["21.0282179", "105.7837082"], ["21.0281682", "105.7840558"], ["21.0281489", "105.7841906"], ["21.0279358", "105.7858096"], ["21.0277589", "105.7871848"], ["21.0279283", "105.7874132"], ["21.0291569", "105.7877118"], ["21.0303045", "105.787987"], ["21.0302767", "105.7881896"], ["21.0300617", "105.78963"], ["21.029769", "105.7911569"], ["21.029743", "105.7912545"], ["21.0295721", "105.7918946"], ["21.0299729", "105.7920371"], ["21.0305885", "105.7922674"], ["21.0309344", "105.7923857"], ["21.0316116", "105.7928338"], ["21.0319029", "105.7930265"], ["21.0323311", "105.7933081"], ["21.0347855", "105.7946319"], ["21.0345927", "105.7952285"], ["21.0347108", "105.7952656"], ["21.0347607", "105.7951266"], ["21.0355234", "105.7952035"], ["21.0356688", "105.7951518"], ["21.0358258", "105.7951027"]]'
       }
     }, status: :ok
     # redirect_to root_path
@@ -292,6 +292,22 @@ class AnothersController < ApplicationController
         id: pars
       }
     }
+  end
+
+  def set_request_status
+    request_id = params[:request_id]
+    status = params[:status]
+    request = Request.find_by_id(request_id)
+    request.status = status
+    if request.save
+      render json: {
+        message: 'success',
+      }
+    else
+      render json: {
+        message: 'error',
+      }
+    end
   end
 
 end
