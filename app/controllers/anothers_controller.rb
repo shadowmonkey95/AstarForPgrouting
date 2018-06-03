@@ -115,26 +115,28 @@ class AnothersController < ApplicationController
     shipper_id = params[:shipper_id]
     request_id = params[:request_id]
     request = Request.find_by_id(request_id)
-    # path = set_path(request.shop_id, shipper_id)
+    path = set_path(request.shop_id, shipper_id)
+    shop = Shop.find_by_id(request.shop_id)
+    location = Location.find_by(shipper_id: shipper_id)
 
     invoice = Invoice.new
-    invoice.shop_id = request.shop_id
+    invoice.shop_id = shop.id
     invoice.shipper_id = shipper_id
-    # invoice.distance = distance.first[0]
+    invoice.distance = haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
     # invoice.distance2 = distance.first[0]
     # invoice.shipping_cost = shipping_cost
-    invoice.deposit = 500000
-    invoice.user_id = Shop.find(request.shop_id).user_id
+    invoice.deposit = 100000
+    invoice.user_id = shop.user_id
     invoice.save
     request.update_columns(status: "Found shipper")
-
 
     render json: {
       message: 'success',
       data: {
         shipper_id: shipper_id,
         request_id: request_id,
-        path: '[["21.0288648", "105.7794524"], ["21.0286231", "105.7809988"], ["21.0282179", "105.7837082"], ["21.0281682", "105.7840558"], ["21.0281489", "105.7841906"], ["21.0279358", "105.7858096"], ["21.0277589", "105.7871848"], ["21.0279283", "105.7874132"], ["21.0291569", "105.7877118"], ["21.0303045", "105.787987"], ["21.0302767", "105.7881896"], ["21.0300617", "105.78963"], ["21.029769", "105.7911569"], ["21.029743", "105.7912545"], ["21.0295721", "105.7918946"], ["21.0299729", "105.7920371"], ["21.0305885", "105.7922674"], ["21.0309344", "105.7923857"], ["21.0316116", "105.7928338"], ["21.0319029", "105.7930265"], ["21.0323311", "105.7933081"], ["21.0347855", "105.7946319"], ["21.0345927", "105.7952285"], ["21.0347108", "105.7952656"], ["21.0347607", "105.7951266"], ["21.0355234", "105.7952035"], ["21.0356688", "105.7951518"], ["21.0358258", "105.7951027"]]'
+        # path: '[["21.0288648", "105.7794524"], ["21.0286231", "105.7809988"], ["21.0282179", "105.7837082"], ["21.0281682", "105.7840558"], ["21.0281489", "105.7841906"], ["21.0279358", "105.7858096"], ["21.0277589", "105.7871848"], ["21.0279283", "105.7874132"], ["21.0291569", "105.7877118"], ["21.0303045", "105.787987"], ["21.0302767", "105.7881896"], ["21.0300617", "105.78963"], ["21.029769", "105.7911569"], ["21.029743", "105.7912545"], ["21.0295721", "105.7918946"], ["21.0299729", "105.7920371"], ["21.0305885", "105.7922674"], ["21.0309344", "105.7923857"], ["21.0316116", "105.7928338"], ["21.0319029", "105.7930265"], ["21.0323311", "105.7933081"], ["21.0347855", "105.7946319"], ["21.0345927", "105.7952285"], ["21.0347108", "105.7952656"], ["21.0347607", "105.7951266"], ["21.0355234", "105.7952035"], ["21.0356688", "105.7951518"], ["21.0358258", "105.7951027"]]'
+        path: path
       }
     }, status: :ok
     # redirect_to root_path
@@ -308,6 +310,15 @@ class AnothersController < ApplicationController
         message: 'error',
       }
     end
+  end
+
+  def haversineAlgorithm(lat1, lon1, lat2, lon2)
+    dLat = (lat2 - lat1).abs * Math::PI / 180
+    dLon = (lon2 - lon1).abs * Math::PI / 180
+    a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math::PI / 180) * Math.cos(lat2 * Math::PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    result = 6371000 * c
+    result
   end
 
 end
