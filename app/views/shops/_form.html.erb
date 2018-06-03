@@ -1,15 +1,31 @@
-<%= simple_form_for [current_user, @shop] do |f| %>
-  <%= f.input :name, required: true %>
-  <%= f.input :address %>
-    <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
-    <div class="form-row">
-      <div class="col">
-        <%= f.input :longitude, class:"form-control" %>
-      </div>
-      <div class="col">
-        <%= f.input :latitude, class:"form-control" %>
-      </div>
-    </div>
-  <%= f.button :submit, class: "btn btn-outline-primary" %>
-<% end %>
-
+<div class="container-fluid" style="width: 50%">
+  <div class="container">
+    <%= simple_form_for [current_user, @shop] do |f| %>
+      Name:<%= f.input :name, required: true, label:false %>
+      Address:<%= f.input :address, label:false %>
+        <small class="form-text text-muted">Leave longitude and latitude blank if you have entered address </small>
+        <div class="form-row">
+          <div class="col">
+            Longitude:
+            <%= f.input :longitude, label:false, class:"form-control" %>
+          </div>
+          <div class="col">
+            Latitude:
+            <%= f.input :latitude, label:false, class:"form-control" %>
+          </div>
+        </div>
+      <%= f.button :submit, class: "btn btn-outline-primary" %>
+    <% end %>
+  </div>
+</div>
+<script>
+    $('input:text#shop_address').on('keyup', function() {
+        var value = $(this).val();
+        $('#shop_latitude').prop( "disabled", true )
+        $('#shop_longitude').prop( "disabled", true )
+        if (value.length == 0){
+            $('#shop_latitude').prop( "disabled", false )
+            $('#shop_longitude').prop( "disabled", false )
+        }
+    });
+</script>

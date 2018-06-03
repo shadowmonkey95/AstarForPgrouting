@@ -514,6 +514,8 @@ input {
 .container-fluid {
   //background-color: rgba(153, 162, 165, 0.81);
   background-color: rgba(255, 255, 255, 0.70);
+  //min-height: 770px;
+  min-height: 500px;
 }
 
 .container {
@@ -544,9 +546,18 @@ label[for=request_has_reserve_0]
 }
 //End of radio
 //Search
-
-
 .easy-autocomplete {
   height: 46px;
 }
 //End of search
+//Table
+.table-bordered {
+  border: 2px solid #212529;
+}
+
+.table-bordered td {
+  border: 2px solid #212529;
+
+}
+
+//End of table

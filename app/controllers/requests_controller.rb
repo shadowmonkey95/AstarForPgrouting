@@ -79,7 +79,6 @@ class RequestsController < ApplicationController
     else
       render 'edit'
     end
-
   end
 
   private

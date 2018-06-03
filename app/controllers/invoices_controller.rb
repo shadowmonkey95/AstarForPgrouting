@@ -3,6 +3,7 @@ class InvoicesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def new
+    @invoices = Invoice.where(:user_id => current_user.id, read_at: nil).reverse
     @invoice = Invoice.new
   end
 

@@ -30,7 +30,7 @@ class MainController < ApplicationController
       end
     else
       @shops = Shop.ransack(user_id_in: [current_user.id], name_cont: params[:q]).result(distinct: true)
-      @requests = Request.ransack(user_id_in: [current_user.id], name_cont: params[:q]).result(distinct: true)
+      @requests = Request.ransack(user_id_in: [current_user.id], address_cont: params[:q]).result(distinct: true)
 
       respond_to do |format|
         format.html {}

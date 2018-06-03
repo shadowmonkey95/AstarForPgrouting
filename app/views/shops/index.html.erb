@@ -36,7 +36,8 @@
                     <!--<td><%= s.longitude %></td>-->
                     <!--<td><%= s.latitude %></td>-->
                     <td colspan="2">
-                      <%= button_to "Request", user_shop_requests_path(current_user.id, shop_id: s.id), class: "btn btn-outline-dark", type: "button", form: {style: 'display:inline-block;'}, :method => :get%>
+                      <%= button_to "Edit", edit_user_shop_path(current_user.id, id: s.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
+                      <!--<%= button_to "Request", user_shop_requests_path(current_user.id, shop_id: s.id), class: "btn btn-outline-dark", type: "button", form: {style: 'display:inline-block;'}, :method => :get%>-->
                       <%= button_to "Delete", user_shop_path(current_user.id, id: s.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>
                     </td>
                   </tr>
@@ -52,26 +53,6 @@
               <%= button_to "Register Shop", new_user_shop_path(current_user.id), class: "btn btn-primary", type: "button", :method => :get %>
             </div>
           </div>
-          <!--<div class="digg_pagination">-->
-            <!--<div>-->
-              <!--<%= paginate @shops %>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div class="row">-->
-            <!--<div align="center">-->
-              <!--<%= button_to "Add Shop", new_user_shop_path(current_user.id), class: "btn btn-outline-primary", type: "button", :method => :get %>-->
-            <!--</div>-->
-          <!--</div>-->
-
-
-          <!--<div>-->
-            <!--<div id="map" style='width: 1111px; height: 400px;'></div>-->
-          <!--</div>-->
-
-          <!--<div>-->
-            <!--<div id="map" style='width: 1111px; height: 400px;'></div>-->
-          <!--</div>-->
         </div>
         </div>
   <% end %>

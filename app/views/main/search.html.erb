@@ -1,7 +1,11 @@
-<% if @shops.empty? %>
+<% if @shops.empty? && @requests.empty? %>
     <h2>Your search doesn't match anything</h2>
 <% else %>
     <% @shops.each do |shop| %>
         <%= link_to shop.name, user_shop_path(shop.user_id, shop) %>
+    <% end %>
+
+    <% @requests.each do |r| %>
+        <%= link_to r.address, user_shop_request_path(current_user.id, r.shop_id, id: r.id) %>
     <% end %>
 <% end %>

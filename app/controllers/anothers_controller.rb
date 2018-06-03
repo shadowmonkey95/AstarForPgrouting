@@ -118,18 +118,16 @@ class AnothersController < ApplicationController
     path = set_path(request.shop_id, shipper_id)
 
     invoice = Invoice.new
-    invoice.shop_id = shop_id
+    invoice.shop_id = request.shop_id
     invoice.shipper_id = shipper_id
-    invoice.distance = distance.first[0]
-    invoice.distance2 = distance.first[0]
-    invoice.shipping_cost = shipping_cost
+    # invoice.distance = distance.first[0]
+    # invoice.distance2 = distance.first[0]
+    # invoice.shipping_cost = shipping_cost
     invoice.deposit = 500000
-    invoice.user_id = shop.user_id
+    invoice.user_id = Shop.find(request.shop_id).user_id
     invoice.save
     request.update_columns(status: "Found shipper")
-    if invoice.save
-      invoice.create_activity key: 'invoice.create', recipient: User.where("id = #{invoice.user_id}").try(:first)
-    end
+
 
     render json: {
       message: 'success',
@@ -139,7 +137,35 @@ class AnothersController < ApplicationController
         path: path
       }
     }, status: :ok
+    # redirect_to root_path
   end
+
+  # def self.accept_booking2(shipper_id, request_id)
+  #
+  #   request = Request.find_by_id(request_id)
+  #   # path = set_path(request.shop_id, shipper_id)
+  #   shop_id = 4
+  #
+  #   invoice = Invoice.new
+  #   invoice.shop_id = shop_id
+  #   invoice.shipper_id = shipper_id
+  #   # invoice.distance = distance.first[0]
+  #   # invoice.distance2 = distance.first[0]
+  #   # invoice.shipping_cost = shipping_cost
+  #   # invoice.deposit = 500000
+  #   invoice.user_id = 5
+  #   invoice.save
+  #   request.update_columns(status: "Found shipper")
+  #
+  #   render json: {
+  #       message: 'success',
+  #       data: {
+  #           shipper_id: shipper_id,
+  #           request_id: request_id,
+  #           # path: path
+  #       }
+  #   }, status: :ok
+  # end
 
   def set_path(shop_id, shipper_id)
     shop = Shop.find_by_id(shop_id)

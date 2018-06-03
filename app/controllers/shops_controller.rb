@@ -29,6 +29,17 @@ class ShopsController < ApplicationController
     @shop = current_user.shops.build
   end
 
+  def edit
+  end
+
+  def update
+    if @shop.update(shop_params)
+      redirect_to user_shop_path(current_user.id)
+    else
+      render 'edit'
+    end
+  end
+
   def create
     @shop = current_user.shops.build(shop_params)
 
@@ -55,7 +66,7 @@ class ShopsController < ApplicationController
       @shop.destroy
       redirect_to root_path
     else
-      flash.alert = "Cannot delete"
+      flash.alert = "Cannot delete!!! There are pending requests in this shops"
       redirect_to root_path
     end
     # @shop.destroy
