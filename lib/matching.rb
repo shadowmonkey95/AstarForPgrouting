@@ -50,20 +50,21 @@ module Matching
             end
           end
 
-          cost_matrix = []
-          requests.each do |request|
-            cost_matrix_child = []
-            list.each do |i|
-              shop = Shop.find_by_id(request.shop_id)
-              locate = Location.find_by(shipper_id: i)
-              cost_matrix_child << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, locate.latitude.to_f, locate.longtitude.to_f)
-            end
-            cost_matrix << cost_matrix_child
-          end
-          cost_matrix
-          matched = Munkres.new(cost_matrix).find_pairings
-          matched
-          list
+        # list
+          # cost_matrix = []
+          # requests.each do |request|
+          #   cost_matrix_child = []
+          #   list.each do |i|
+          #     shop = Shop.find_by_id(request.shop_id)
+          #     locate = Location.find_by(shipper_id: i)
+          #     cost_matrix_child << haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, locate.latitude.to_f, locate.longtitude.to_f)
+          #   end
+          #   cost_matrix << cost_matrix_child
+          # end
+          # cost_matrix
+          # matched = Munkres.new(cost_matrix).find_pairings
+          # matched
+          # list
           # matched.each do |m|
             # sendNoti(Shipper.find_by_id(list[m[1]]).req_id, requests[m[0]].id, 0)
           # end

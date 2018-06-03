@@ -12,6 +12,11 @@ class ShopsController < ApplicationController
         marker.lat shop.latitude
         marker.lng shop.longitude
         marker.infowindow "Name: #{shop.name} </br> Address: #{shop.address} "
+        marker.picture({
+                           :url => ActionController::Base.helpers.asset_path("assets/images/shop_marker.png"),
+                           :width => 24,
+                           :height => 24
+                       })
       end
     end
   end

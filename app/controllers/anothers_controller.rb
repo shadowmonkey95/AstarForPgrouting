@@ -205,6 +205,24 @@ class AnothersController < ApplicationController
     path.path
   end
 
+  def set_path2(request_id)
+    request = Request.find_by_id(request_id)
+    shop = Shop.find_by_id(request.shop_id)
+
+    shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
+    destination_vertice_id = findNearestPoint(request.latitude.to_f, request.longtitude.to_f)
+
+    sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+          ARRAY[#{shop_vertice_id}], ARRAY[#{destination_vertice_id}], heuristic :=4 )"
+    result = ActiveRecord::Base.connection.execute(sql)
+
+    node_result = Array.new
+    result.each do |result|
+      node_result << result['node']
+    end
+
+  end
+
   def findNearestPoint(lat, lon)
     sql = "
             select id
