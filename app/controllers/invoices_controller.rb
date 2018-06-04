@@ -59,17 +59,23 @@ class InvoicesController < ApplicationController
     invoices = Invoice.where(shipper_id: shipper_id)
     if invoices
       shops = []
+      address = []
       invoices.each do |invoice|
         shop = Shop.find(invoice.shop_id)
+        request = Request.find_by_id(invoice.request_id)
         if shop
           shops << shop
+        end
+        if request
+          address << request.address
         end
       end
       render json: {
           message: 'success',
           data: {
               invoices: invoices,
-              shops: shops
+              shops: shops,
+              address: address
           }
       }, status: :ok
     else
