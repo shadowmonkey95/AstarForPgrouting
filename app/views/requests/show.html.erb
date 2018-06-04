@@ -20,7 +20,8 @@
         <% end %>
 
         <% unless @request.shipper_id.blank?  %>
-            <span><b>Shipper: </b></span><%= Shipper.find(@request.shipper_id).first_name + " " + Shipper.find(@request.shipper_id).second_name%><br>
+            <% invoice = Invoice.find_by_request_id(@request.id) %>
+            <span><b>Shipper: </b></span><%= Shipper.find(invoice.shipper_id).first_name + " " + Shipper.find(invoice.shipper_id).second_name%><br>
         <% end %>
         <%= button_to "Go to shop", user_shop_path(current_user.id, @shop.id), class: "btn btn-outline-primary", form: {style: 'display:inline-block;'},type: "button", :method => :get %>
         <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, @request.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>

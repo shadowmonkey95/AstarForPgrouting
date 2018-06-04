@@ -181,11 +181,11 @@ class AnothersController < ApplicationController
     location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
 
     sql = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
-          ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4)"
+          ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4, directed := 'true')"
     result = ActiveRecord::Base.connection.execute(sql)
 
     sql2 = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
-          ARRAY[#{shop_vertice_id}], ARRAY[#{destination_vertice_id}], heuristic :=4 )"
+          ARRAY[#{shop_vertice_id}], ARRAY[#{destination_vertice_id}], heuristic :=4, directed := 'true' )"
     result2 = ActiveRecord::Base.connection.execute(sql2)
 
     node_result = Array.new
