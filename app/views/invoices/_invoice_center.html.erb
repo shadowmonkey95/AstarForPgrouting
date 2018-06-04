@@ -6,7 +6,8 @@
     <div id="invoicesBody" class="invoices">
       <ul id="invoiceList">
         <% if invoices.count == 0 %>
-            You don't have any new notifications
+            <!--You don't have any new notifications-->
+            <br><br>
         <% else %>
           <%= render invoices if invoices %>
         <% end %>

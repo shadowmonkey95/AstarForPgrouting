@@ -69,7 +69,8 @@
 
                   <tbody>
                   <%- @requests_pending.each do |r| -%>
-                      <tr data-link="<%= user_shop_request_path(current_user.id, @shop.id, id: r.id) %>">
+                      <% shop_id = Request.find(r.id).shop_id%>
+                      <tr data-link="<%= user_shop_request_path(current_user.id, shop_id, id: r.id) %>">
                         <td><%= r.address %></td>
                         <td><%= r.status %></td>
                         <td><%= r.created_at.strftime("%d/%m/%Y %H:%M") %></td>
@@ -105,7 +106,8 @@
 
                   <tbody>
                   <%- @requests_found.each do |r| -%>
-                      <tr data-link="<%= user_shop_request_path(current_user.id, @shop.id, id: r.id) %>">
+                      <% shop_id = Request.find(r.id).shop_id%>
+                      <tr data-link="<%= user_shop_request_path(current_user.id, shop_id, id: r.id) %>">
                         <td><%= r.address %></td>
                         <td><%= r.status %></td>
                         <td><%= r.created_at.strftime("%d/%m/%Y %H:%M") %></td>

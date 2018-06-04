@@ -19,10 +19,20 @@
             <span><b>Pre-order: </b></span><%= @request.reserve.strftime("%H:%M | %d/%m/%Y") %><br>
         <% end %>
 
-        <% unless @request.shipper_id.blank?  %>
-            <% invoice = Invoice.find_by_request_id(@request.id) %>
-            <span><b>Shipper: </b></span><%= Shipper.find(invoice.shipper_id).first_name + " " + Shipper.find(invoice.shipper_id).second_name%><br>
-        <% end %>
+        <% if @invoice != nil  %>
+            <span><b>Shipper: </b></span><%= @shipper.first_name + " " + @shipper.second_name%><br>
+
+            <% if @path.distance2 >= 1000 %>
+                <% distance_km = (@path.distance2 / 1000).round %>
+                <span><b>Estimated distance: </b></span><%= distance_km %>km<br>
+            <% else %>
+                <span><b>Estimated distance: </b></span><%= @path.distance2 %>m<br>
+            <% end %>
+
+            <span><b>Shipping cost: </b></span><%= @price%>VND<br>
+
+
+      <% end %>
         <%= button_to "Go to shop", user_shop_path(current_user.id, @shop.id), class: "btn btn-outline-primary", form: {style: 'display:inline-block;'},type: "button", :method => :get %>
         <%= button_to "Edit", edit_user_shop_request_path(current_user.id, @shop.id, @request.id), class: "btn btn-outline-dark", method: "get", type: "button", form: {style: 'display:inline-block;'}%>
         <%= button_to "Delete", user_shop_request_path(@request.id), class: "btn btn-outline-danger", type: "button", method: :delete, data: { confirm: "Are you sure?"}, form: {style: 'display:inline-block;'} %>

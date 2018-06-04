@@ -43,6 +43,12 @@ class RequestsController < ApplicationController
 
   def show
     @request = Request.find(params[:id])
+    @invoice = Invoice.find_by_request_id(@request.id)
+    @shipper = Shipper.find(@invoice.shipper_id)
+    @path = Path.find_by_shipper_id(@shipper.id)
+    if (@path != nil)
+      @price = calculate_price(@path.distance2)
+    end
     @hash = Gmaps4rails.build_markers(@request) do |request, marker|
       marker.lat request.latitude
       marker.lng request.longitude
@@ -125,5 +131,16 @@ class RequestsController < ApplicationController
 
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
+  end
+
+  def calculate_price(distance)
+    distance_km = (distance / 1000).round
+    if (distance_km <=2 )
+      price = 15000
+      price
+    else
+      price = 15000 + 5000*(distance_km - 2)
+      price
+    end
   end
 end

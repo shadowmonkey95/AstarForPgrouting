@@ -12,11 +12,11 @@ class AllRequestsController < ApplicationController
     @requests = Request.order(sort_column + " " + sort_direction).where("shop_id IN (?)", @shops).page(params[:requests]).per(8)
     @requests_count = Request.where("shop_id IN (?)", @shops).count
 
-    @requests_pending = Request.order(sort_column + " " + sort_direction).where(["shop_id = ? and status in(?,?)", params[:shop_id], "Pending", "Processing"]).page(params[:requests_pending]).per(6)
-    @requests_pending_count = Request.where(["shop_id = ? and status in(?,?)", params[:shop_id], "Pending", "Processing"]).count
+    @requests_pending = Request.order(sort_column + " " + sort_direction).where(["shop_id in(?) and status in(?,?)", @shops, "Pending", "Processing"]).page(params[:requests_pending]).per(6)
+    @requests_pending_count = Request.where(["shop_id in (?) and status in(?,?)", @shops, "Pending", "Processing"]).count
 
-    @requests_found = Request.order(sort_column + " " + sort_direction).where(["shop_id = ? and status in(?,?,?)", params[:shop_id], "Found shipper", "Shipper arrived", "Completed"]).page(params[:requests_found]).per(6)
-    @requests_found_count = Request.where(["shop_id = ? and status in(?,?,?)", params[:shop_id], "Found shipper", "Shipper arrived", "Completed"]).count
+    @requests_found = Request.order(sort_column + " " + sort_direction).where(["shop_id in (?) and status in(?,?,?)", @shops, "Found shipper", "Shipper arrived", "Completed"]).page(params[:requests_found]).per(6)
+    @requests_found_count = Request.where(["shop_id in (?) and status in(?,?,?)", @shops, "Found shipper", "Shipper arrived", "Completed"]).count
 
 
 
