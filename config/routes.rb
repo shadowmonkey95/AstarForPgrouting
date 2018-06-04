@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     post :create_shop
     post :test
     post :set_request_status
+    post :get_path_2
   end
 
   get 'ways/find_path' => 'ways#find_path', as: :find_path
