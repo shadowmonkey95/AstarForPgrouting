@@ -389,7 +389,7 @@ class AnothersController < ApplicationController
       render json: {
         message: 'success',
         data: {
-          path: path.path2
+          path: path
         }
       }
     else
