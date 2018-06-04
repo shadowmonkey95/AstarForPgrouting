@@ -382,4 +382,21 @@ class AnothersController < ApplicationController
     result
   end
 
+  def get_path_2
+    shipper_id = params[:shipper_id]
+    path = Path.find_by(shipper_id: shipper_id)
+    if path
+      render json: {
+        message: 'success',
+        data: {
+          path: path
+        }
+      }
+    else
+      render json: {
+        message: 'error',
+      }
+    end
+  end
+
 end
