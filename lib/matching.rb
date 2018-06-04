@@ -15,7 +15,7 @@ module Matching
           time_now = (Time.now.to_f * 1000).to_i
           time_end = time_now + (60 * 60 * 1000)
           sec = (time_end.to_f / 1000).to_s
-          date = Date.strptime(sec, '%s')
+          date = Time.at(time_end / 1000)
           requests = Request.where(has_reserve: 1).where('reserve < ?', date).where(status: 'Pending')
           list = []
           delete = []
