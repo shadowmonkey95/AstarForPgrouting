@@ -42,7 +42,17 @@ class RequestsController < ApplicationController
   # end
 
   def show
-    @requests = Request.find(params[:id])
+    @request = Request.find(params[:id])
+    @hash = Gmaps4rails.build_markers(@request) do |request, marker|
+      marker.lat request.latitude
+      marker.lng request.longitude
+      marker.infowindow "Delivery Location </br> Address: #{request.address} "
+    end
+    @hash2 = Gmaps4rails.build_markers(@shop) do |shop, marker|
+      marker.lat shop.latitude
+      marker.lng shop.longitude
+      marker.infowindow "Shop's name: #{shop.name} </br> Address: #{shop.address} "
+    end
   end
 
   def new

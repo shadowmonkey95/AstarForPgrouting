@@ -4,8 +4,8 @@
             <p align="center">You don't have any shops now!!!</p>
 
             <div class="row">
-              <div align="center">
-                <%= button_to "Add Shop", new_user_shop_path(current_user.id), class: "btn btn-outline-primary", type: "button", :method => :get %>
+              <div class="col-md-0 offset-md-5">
+                <%= button_to "Register Shop", new_user_shop_path(current_user.id), class: "btn btn-outline-primary", type: "button", :method => :get %>
               </div>
             </div>
             <p></p>

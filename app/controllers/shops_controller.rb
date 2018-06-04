@@ -21,7 +21,7 @@ class ShopsController < ApplicationController
     @hash = Gmaps4rails.build_markers(@shop) do |shop, marker|
       marker.lat shop.latitude
       marker.lng shop.longitude
-      marker.infowindow "Name: #{shop.name} </br> Address: #{shop.address} "
+      marker.infowindow "Shop's name: #{shop.name} </br> Address: #{shop.address} "
     end
   end
 
