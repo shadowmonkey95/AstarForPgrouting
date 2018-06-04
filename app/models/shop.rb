@@ -9,7 +9,7 @@ class Shop < ApplicationRecord
     end
   end
 
-  # before_validation :geocode, if: :address_changed?
+  before_validation :geocode, if: :address_changed?
 
   # validates :address, presence: true
   validate :found_address_presence

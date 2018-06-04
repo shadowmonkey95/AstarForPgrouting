@@ -115,7 +115,7 @@ class AnothersController < ApplicationController
     shipper_id = params[:shipper_id]
     request_id = params[:request_id]
     request = Request.find_by_id(request_id)
-    path = set_path(request.shop_id, shipper_id)
+    path = set_path(request.shop_id, shipper_id, request_id)
     shop = Shop.find_by_id(request.shop_id)
     location = Location.find_by(shipper_id: shipper_id)
 
@@ -127,6 +127,7 @@ class AnothersController < ApplicationController
     # invoice.shipping_cost = shipping_cost
     invoice.deposit = 100000
     invoice.user_id = shop.user_id
+    invoice.request_id = request_id
     invoice.save
     request.update_columns(status: "Found shipper")
 
@@ -169,9 +170,12 @@ class AnothersController < ApplicationController
   #   }, status: :ok
   # end
 
-  def set_path(shop_id, shipper_id)
+  def set_path(shop_id, shipper_id, request_id)
     shop = Shop.find_by_id(shop_id)
     shop_vertice_id = findNearestPoint(shop.latitude.to_f, shop.longitude.to_f)
+
+    request = Request.find_by_id(request_id)
+    destination_vertice_id = findNearestPoint(request.latitude.to_f, request.longitude.to_f)
 
     location = Location.find_by(shipper_id: shipper_id)
     location_vertice_id = findNearestPoint(location.latitude.to_f, location.longtitude.to_f)
@@ -180,10 +184,41 @@ class AnothersController < ApplicationController
           ARRAY[#{location_vertice_id}], ARRAY[#{shop_vertice_id}], heuristic :=4)"
     result = ActiveRecord::Base.connection.execute(sql)
 
+    sql2 = "Select * from pgr_astar('SELECT gid as id, source, target, cost, reverse_cost, x1, y1, x2, y2 FROM ways',
+          ARRAY[#{shop_vertice_id}], ARRAY[#{destination_vertice_id}], heuristic :=4 )"
+    result2 = ActiveRecord::Base.connection.execute(sql2)
+
     node_result = Array.new
     result.each do |result|
       node_result << result['node']
     end
+
+    node_result2 = Array.new
+    result2.each do |result2|
+      node_result2 << result2['node']
+    end
+
+    edge_result2 = Array.new
+    result2.each do |result2|
+      edge_result2 << result2['edge']
+    end
+
+    distance2 = 0
+    time2 = 0
+    result_array = Array.new
+    edge_result2.each do |edge|
+      if (edge == -1)
+        result_array << distance2
+        result_array << time2
+        result_array
+      else
+        length_m = Way.find(edge).length_m
+        distance2 += length_m
+        cost_s = Way.find(edge).cost_s
+        time2 += cost_s
+      end
+    end
+
 
     path_result = Array.new
     node_result.each do |node|
@@ -193,14 +228,30 @@ class AnothersController < ApplicationController
       path_result << tmp
     end
 
+    path_result2 = Array.new
+    node_result2.each do |node|
+      tmp = Array.new
+      tmp << Vertice.find(node).lat.to_s
+      tmp << Vertice.find(node).lon.to_s
+      path_result2 << tmp
+    end
+
+
+
     path = Path.find_by(shipper_id: shipper_id)
     if path
       path.path = path_result
+      path.path2 = path_result2
+      path.distance2 = result_array[0]
+      path.time2 = result_array[1]
       path.save
     else
       path = Path.new
       path.shipper_id = shipper_id
       path.path = path_result
+      path.path2 = path_result2
+      path.distance2 = result_array[0]
+      path.time2 = result_array[1]
       path.save
     end
 
