@@ -44,20 +44,25 @@ class RequestsController < ApplicationController
   def show
     @request = Request.find(params[:id])
     @invoice = Invoice.find_by_request_id(@request.id)
-    @shipper = Shipper.find(@invoice.shipper_id)
-    @path = Path.find_by_shipper_id(@shipper.id)
-    if (@path != nil)
-      @price = calculate_price(@path.distance2)
+
+    @hash2 = Gmaps4rails.build_markers(@shop) do |shop, marker|
+      marker.lat shop.latitude
+      marker.lng shop.longitude
+      marker.infowindow "Shop's name: #{shop.name} </br> Address: #{shop.address} "
     end
     @hash = Gmaps4rails.build_markers(@request) do |request, marker|
       marker.lat request.latitude
       marker.lng request.longitude
       marker.infowindow "Delivery Location </br> Address: #{request.address} "
     end
-    @hash2 = Gmaps4rails.build_markers(@shop) do |shop, marker|
-      marker.lat shop.latitude
-      marker.lng shop.longitude
-      marker.infowindow "Shop's name: #{shop.name} </br> Address: #{shop.address} "
+    if (@invoice != nil)
+      @shipper = Shipper.find(@invoice.shipper_id)
+      @path = Path.find_by_shipper_id(@shipper.id)
+      if (@path != nil)
+        @price = calculate_price(@path.distance2)
+        # @invoice.shipping_cost = @price
+        # @invoice.save!
+      end
     end
   end
 
