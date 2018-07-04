@@ -119,12 +119,14 @@ class AnothersController < ApplicationController
     shop = Shop.find_by_id(request.shop_id)
     location = Location.find_by(shipper_id: shipper_id)
 
+    path2 = Path.find_by(shipper_id: shipper_id)
+
     invoice = Invoice.new
     invoice.shop_id = shop.id
     invoice.shipper_id = shipper_id
     invoice.distance = haversineAlgorithm(shop.latitude.to_f, shop.longitude.to_f, location.latitude.to_f, location.longtitude.to_f)
     # invoice.distance2 = distance.first[0]
-    # invoice.shipping_cost = shipping_cost
+    # invoice.shipping_cost = calculate_price(path2.distance2)
     invoice.deposit = 100000
     invoice.user_id = shop.user_id
     invoice.request_id = request_id
@@ -396,6 +398,17 @@ class AnothersController < ApplicationController
       render json: {
         message: 'error',
       }
+    end
+  end
+
+  def calculate_price(distance)
+    distance_km = (distance / 1000).round
+    if (distance_km <=2 )
+      price = 15000
+      price
+    else
+      price = 15000 + 5000*(distance_km - 2)
+      price
     end
   end
 
